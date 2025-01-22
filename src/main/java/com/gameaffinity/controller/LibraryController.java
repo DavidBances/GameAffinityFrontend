@@ -49,6 +49,10 @@ public class LibraryController {
         return libraryServiceAPI.updateGameScore(id, userId, newScore);
     }
 
+    public int getGameScore(int gameId){
+        return libraryServiceAPI.getGameScore(gameId);
+    }
+
     public boolean removeGameFromLibrary(int userId, int gameId) {
         return libraryServiceAPI.removeGameFromLibrary(userId, gameId);
     }
