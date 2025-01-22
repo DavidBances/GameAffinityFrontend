@@ -4,6 +4,7 @@ import com.gameaffinity.controller.LibraryController;
 import com.gameaffinity.model.Game;
 import com.gameaffinity.model.UserBase;
 import javafx.beans.property.SimpleDoubleProperty;
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
@@ -33,6 +34,8 @@ public class GameDatabaseView {
     private TableColumn<Game, String> genreColumn;
     @FXML
     private TableColumn<Game, Double> priceColumn;
+    @FXML
+    private TableColumn<Game, Integer> scoreColumn;
     @FXML
     private Button addGameButton;
     @FXML
@@ -86,7 +89,9 @@ public class GameDatabaseView {
         genreColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getGenre()));
         priceColumn
                 .setCellValueFactory(cellData -> new SimpleDoubleProperty(cellData.getValue().getPrice()).asObject());
-
+        scoreColumn.setCellValueFactory(cellData ->
+                new SimpleIntegerProperty(libraryController.getGameScore(cellData.getValue().getId())).asObject()
+        );
         refreshGameDatabase();
     }
 

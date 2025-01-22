@@ -1,5 +1,6 @@
 package com.gameaffinity.service;
 
+import com.fasterxml.jackson.databind.ser.Serializers;
 import com.gameaffinity.model.Game;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
@@ -95,6 +96,11 @@ public class LibraryServiceAPI {
                 .toUriString();
         HttpEntity<Boolean> response = restTemplate.exchange(finalUrl, HttpMethod.PUT, null, Boolean.class);
         return response.getBody() != null && response.getBody();
+    }
+
+    public int getGameScore(int gameId){
+        String url = BASE_URL + "/avgScore/" + gameId;
+        return restTemplate.getForObject(url, Integer.class);
     }
 
     public boolean removeGameFromLibrary(int userId, int gameId) {
