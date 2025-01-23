@@ -42,7 +42,6 @@ public class GameDatabaseView {
     private Button backButton;
 
     private final LibraryController libraryController = new LibraryController();
-    private UserBase user;
 
     public void initialize() {
         databaseTable.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
@@ -55,9 +54,9 @@ public class GameDatabaseView {
             String search = searchField.getText().trim();
             if ("All".equalsIgnoreCase(selectedGenre)) {
                 refreshGameDatabase();
-            } else if (!searchField.getText().trim().isEmpty()){
+            } else if (!searchField.getText().trim().isEmpty()) {
                 refreshGameDatabaseByGenreAndName(selectedGenre, search);
-            }else{
+            } else {
                 refreshGameDatabaseByGenre(selectedGenre);
             }
         });
@@ -72,11 +71,7 @@ public class GameDatabaseView {
         });
     }
 
-    public void setUser(UserBase user) {
-        this.user = user;
-    }
-
-    private void loadGenres(){
+    private void loadGenres() {
         genreComboBox.getItems().clear();
         genreComboBox.getItems().add("All");
         genreComboBox.getItems().addAll(libraryController.getAllGenres());
@@ -101,17 +96,17 @@ public class GameDatabaseView {
     }
 
     private void refreshGameDatabaseByName(String keyword) {
-        List<Game> games = libraryController.getGamesByNameUser(this.user.getId(), keyword);
+        List<Game> games = libraryController.getGamesByNameUser(keyword);
         databaseTable.setItems(FXCollections.observableArrayList(games));
     }
 
     private void refreshGameDatabaseByGenre(String genre) {
-        List<Game> games = libraryController.getGamesByGenreUser(this.user.getId(), genre);
+        List<Game> games = libraryController.getGamesByGenreUser(genre);
         databaseTable.setItems(FXCollections.observableArrayList(games));
     }
 
     private void refreshGameDatabaseByGenreAndName(String genre, String name) {
-        List<Game> games = libraryController.getGamesByGenreAndNameUser(this.user.getId(), genre, name);
+        List<Game> games = libraryController.getGamesByGenreAndNameUser(genre, name);
         databaseTable.setItems(FXCollections.observableArrayList(games));
     }
 
@@ -119,7 +114,7 @@ public class GameDatabaseView {
         Game selectedGame = databaseTable.getSelectionModel().getSelectedItem();
         if (selectedGame != null) {
             try {
-                boolean success = libraryController.addGameToLibrary(this.user.getId(), selectedGame.getName());
+                boolean success = libraryController.addGameToLibrary(selectedGame.getName());
                 showAlert(success ? "Game added to library!" : "Game already in library or not found.", success ? Alert.AlertType.INFORMATION : Alert.AlertType.ERROR);
             } catch (Exception ex) {
                 showAlert(ex.getMessage(), Alert.AlertType.ERROR);
@@ -134,9 +129,6 @@ public class GameDatabaseView {
             Stage currentStage = (Stage) databaseTable.getScene().getWindow();
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/user/user_dashboard.fxml"));
             Parent userDashboard = loader.load();
-
-            UserDashboardView controller = loader.getController();
-            controller.setUser(this.user);
 
             Scene userScene = new Scene(userDashboard);
             currentStage.setScene(userScene);

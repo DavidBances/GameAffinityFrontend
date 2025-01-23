@@ -1,8 +1,8 @@
 package com.gameaffinity.controller;
 
-import com.gameaffinity.model.UserBase;
 import com.gameaffinity.service.UserServiceAPI;
 
+// LoginController
 public class LoginController {
 
     private final UserServiceAPI userServiceAPI;
@@ -11,7 +11,8 @@ public class LoginController {
         this.userServiceAPI = new UserServiceAPI();
     }
 
-    public UserBase login(String email, String password) {
-        return userServiceAPI.login(email, password);
+    public String login(String email, String password) {
+        userServiceAPI.login(email, password);
+        return userServiceAPI.getRole();
     }
 }

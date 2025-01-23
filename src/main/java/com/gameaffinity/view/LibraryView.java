@@ -19,7 +19,7 @@ import javafx.util.converter.IntegerStringConverter;
 
 import java.util.List;
 
-public class  LibraryView {
+public class LibraryView {
 
     @FXML
     private TextField searchField;
@@ -49,12 +49,6 @@ public class  LibraryView {
     private Button backButton;
 
     private final LibraryController libraryController = new LibraryController();
-    private UserBase user;
-
-    public void setUser(UserBase user){
-        this.user = user;
-        refreshGamesList();
-    }
 
     public void initialize() {
         gamesTable.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
@@ -67,9 +61,9 @@ public class  LibraryView {
             String search = searchField.getText().trim();
             if ("All".equalsIgnoreCase(selectedGenre)) {
                 refreshGamesList();
-            } else if (!searchField.getText().trim().isEmpty()){
+            } else if (!searchField.getText().trim().isEmpty()) {
                 refreshGamesListByGenreAndName(selectedGenre, search);
-            }else{
+            } else {
                 refreshGamesListByGenre(selectedGenre);
             }
         });
@@ -129,28 +123,28 @@ public class  LibraryView {
     }
 
     private void refreshGamesList() {
-        List<Game> games = libraryController.getGamesByUserId(user.getId());
+        List<Game> games = libraryController.getGamesByUserId();
         gamesTable.setItems(FXCollections.observableArrayList(games));
     }
 
     private void refreshGamesListByName(String name) {
-        List<Game> games = libraryController.getGamesByNameUser(this.user.getId(), name);
+        List<Game> games = libraryController.getGamesByNameUser(name);
         gamesTable.setItems(FXCollections.observableArrayList(games));
     }
 
     private void refreshGamesListByGenre(String genre) {
-        List<Game> games = libraryController.getGamesByGenreUser(this.user.getId(), genre);
+        List<Game> games = libraryController.getGamesByGenreUser(genre);
         gamesTable.setItems(FXCollections.observableArrayList(games));
     }
 
     private void refreshGamesListByGenreAndName(String genre, String name) {
-        List<Game> games = libraryController.getGamesByGenreAndNameUser(this.user.getId(), genre, name);
+        List<Game> games = libraryController.getGamesByGenreAndNameUser(genre, name);
         gamesTable.setItems(FXCollections.observableArrayList(games));
     }
 
-    public void updateGameScore(Game game, Integer newScore){
+    public void updateGameScore(Game game, Integer newScore) {
         if (newScore != null && newScore >= 0 && newScore <= 10) {
-            boolean success = libraryController.updateGameScore(game.getId(), this.user.getId(), newScore);
+            boolean success = libraryController.updateGameScore(game.getId(), newScore);
             showAlert(success ? "Score updated successfully!" : "Failed to update score.", Alert.AlertType.INFORMATION);
             refreshGamesList();
         } else {
@@ -158,10 +152,10 @@ public class  LibraryView {
         }
     }
 
-    public void updateGameState(Game game, String newState){
-            boolean success = libraryController.updateGameState(game.getId(), this.user.getId(), newState);
-            showAlert(success ? "State updated successfully!" : "Failed to update state.", Alert.AlertType.INFORMATION);
-            refreshGamesList();
+    public void updateGameState(Game game, String newState) {
+        boolean success = libraryController.updateGameState(game.getId(), newState);
+        showAlert(success ? "State updated successfully!" : "Failed to update state.", Alert.AlertType.INFORMATION);
+        refreshGamesList();
     }
 
 
@@ -169,7 +163,7 @@ public class  LibraryView {
         String gameName = showInputDialog("Enter Game Name to Add:");
         if (gameName != null && !gameName.isEmpty()) {
             try {
-                boolean success = libraryController.addGameToLibrary(this.user.getId(), gameName);
+                boolean success = libraryController.addGameToLibrary(gameName);
                 showAlert(success ? "Game added successfully!" : "Failed to add game.", Alert.AlertType.INFORMATION);
                 refreshGamesList();
             } catch (Exception ex) {
@@ -182,7 +176,7 @@ public class  LibraryView {
         Game selectedGame = gamesTable.getSelectionModel().getSelectedItem();
         if (selectedGame != null) {
             try {
-                boolean success = libraryController.removeGameFromLibrary(this.user.getId(), selectedGame.getId());
+                boolean success = libraryController.removeGameFromLibrary(selectedGame.getId());
                 showAlert(success ? "Game removed successfully!" : "Failed to remove game.", Alert.AlertType.INFORMATION);
                 refreshGamesList();
             } catch (Exception ex) {
@@ -198,10 +192,7 @@ public class  LibraryView {
             Stage currentStage = (Stage) gamesTable.getScene().getWindow();
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/user/user_dashboard.fxml"));
             Parent userDashboard = loader.load();
-
-            UserDashboardView controller = loader.getController();
-            controller.setUser(this.user);
-
+            
             Scene userScene = new Scene(userDashboard);
             currentStage.setScene(userScene);
         } catch (Exception e) {

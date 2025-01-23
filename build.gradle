@@ -20,6 +20,12 @@ dependencies {
     // Para realizar peticiones HTTP al backend
     implementation 'org.springframework:spring-web:6.1.3'
 
+    implementation 'org.springframework.security:spring-security-config:6.1.3'
+    implementation 'org.springframework.security:spring-security-web:6.1.3'
+    implementation 'org.springframework.security:spring-security-core:6.1.3'
+    
+    implementation 'com.auth0:java-jwt:4.4.0'
+
     // Librería JSON para parsear respuestas de la API
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.16.0'
 

@@ -96,12 +96,12 @@ public class FriendshipView {
     }
 
     private void refreshFriendsList() {
-        List<UserBase> friends = friendshipController.getFriends(this.user.getId());
+        List<UserBase> friends = friendshipController.getFriends();
         friendsTable.getItems().setAll(friends);
     }
 
     private void refreshPendingRequests() {
-        List<Friendship> requests = friendshipController.getFriendRequests(this.user.getId());
+        List<Friendship> requests = friendshipController.getFriendRequests();
         requestsTable.getItems().setAll(requests);
     }
 
@@ -172,7 +172,7 @@ public class FriendshipView {
     private void deleteFriend() {
         UserBase selectedFriend = friendsTable.getSelectionModel().getSelectedItem();
         if (selectedFriend != null) {
-            boolean success = friendshipController.deleteFriend(this.user.getId(), selectedFriend.getId());
+            boolean success = friendshipController.deleteFriend(selectedFriend.getId());
             if (success) {
                 showAlert("Friend deleted successfully.", "Success", Alert.AlertType.INFORMATION);
                 refreshFriendsList();

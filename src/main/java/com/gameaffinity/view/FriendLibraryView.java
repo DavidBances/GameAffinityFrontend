@@ -39,7 +39,7 @@ public class FriendLibraryView {
 
     private UserBase user;
 
-    public void setUser(UserBase user){
+    public void setUser(UserBase user) {
         this.user = user;
         refreshGamesList();
     }
@@ -49,16 +49,17 @@ public class FriendLibraryView {
         configureTableColumns();
         loadGenres();
 
-        searchButton.setOnAction(e -> refreshGamesListByName(searchField.getText().trim()));
+        searchButton.setOnAction(e -> {
+        } /*refreshGamesListByName(searchField.getText().trim())*/);
         filterButton.setOnAction(e -> {
             String selectedGenre = genreComboBox.getValue();
             String search = searchField.getText().trim();
             if ("All".equalsIgnoreCase(selectedGenre)) {
                 refreshGamesList();
-            } else if (!searchField.getText().trim().isEmpty()){
-                refreshGamesListByGenreAndName(selectedGenre, search);
-            }else{
-                refreshGamesListByGenre(selectedGenre);
+            } else if (!searchField.getText().trim().isEmpty()) {
+                //refreshGamesListByGenreAndName(selectedGenre, search);
+            } else {
+                //refreshGamesListByGenre(selectedGenre);
             }
         });
     }
@@ -82,24 +83,24 @@ public class FriendLibraryView {
     }
 
     private void refreshGamesList() {
-        List<Game> games = libraryController.getGamesByUserId(user.getId());
+        List<Game> games = libraryController.getAllGamesByFriend(user.getId());
         gamesTable.setItems(FXCollections.observableArrayList(games));
     }
 
-    private void refreshGamesListByName(String name) {
-        List<Game> games = libraryController.getGamesByNameUser(this.user.getId(), name);
-        gamesTable.setItems(FXCollections.observableArrayList(games));
-    }
-
-    private void refreshGamesListByGenre(String genre) {
-        List<Game> games = libraryController.getGamesByGenreUser(this.user.getId(), genre);
-        gamesTable.setItems(FXCollections.observableArrayList(games));
-    }
-
-    private void refreshGamesListByGenreAndName(String genre, String name) {
-        List<Game> games = libraryController.getGamesByGenreAndNameUser(this.user.getId(), genre, name);
-        gamesTable.setItems(FXCollections.observableArrayList(games));
-    }
+//    private void refreshGamesListByName(String name) {
+//        List<Game> games = libraryController.getGamesByNameUser(this.user.getId(), name);
+//        gamesTable.setItems(FXCollections.observableArrayList(games));
+//    }
+//
+//    private void refreshGamesListByGenre(String genre) {
+//        List<Game> games = libraryController.getGamesByGenreUser(this.user.getId(), genre);
+//        gamesTable.setItems(FXCollections.observableArrayList(games));
+//    }
+//
+//    private void refreshGamesListByGenreAndName(String genre, String name) {
+//        List<Game> games = libraryController.getGamesByGenreAndNameUser(this.user.getId(), genre, name);
+//        gamesTable.setItems(FXCollections.observableArrayList(games));
+//    }
 
     private void showAlert(String message, Alert.AlertType alertType) {
         Alert alert = new Alert(alertType);

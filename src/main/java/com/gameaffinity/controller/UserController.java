@@ -11,11 +11,11 @@ public class UserController {
         this.userServiceAPI = new UserServiceAPI();
     }
 
-    public UserBase authenticate(String email, String password) {
-        return userServiceAPI.authenticate(email, password);
-    }
+//    public UserBase authenticate(String email, String password) {
+//        return userServiceAPI.login(email, password);
+//    }
 
-    public boolean updateProfile(String email, String password, String newName, String newEmail, String newPassword) {
-        return userServiceAPI.updateProfile(email, password, newName, newEmail, newPassword);
+    public boolean updateProfile(String password, String newName, String newEmail, String newPassword) {
+        return userServiceAPI.updateProfile(password, newName, newEmail, newPassword);
     }
 }

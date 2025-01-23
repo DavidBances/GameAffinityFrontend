@@ -46,18 +46,15 @@ public class LoginPanelView {
     public void login(String email, String password) {
         try {
             Stage currentStage = (Stage) loginButton.getScene().getWindow();
-            UserBase user = loginController.login(email, password);
-            if (user != null) {
-                if ("ADMINISTRATOR".equalsIgnoreCase(user.getRole())) {
+            String role = loginController.login(email, password);
+            if (role != null) {
+                if ("ADMINISTRATOR".equalsIgnoreCase(role)) {
                     Parent adminDashboard = FXMLLoader.load(getClass().getResource("/fxml/admin/admin_dashboard.fxml"));
                     Scene adminScene = new Scene(adminDashboard);
                     currentStage.setScene(adminScene);
                 } else {
                     FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/user/user_dashboard.fxml"));
                     Parent userDashboard = loader.load();
-
-                    UserDashboardView controller = loader.getController();
-                    controller.setUser(user);
 
                     Scene userScene = new Scene(userDashboard);
                     currentStage.setScene(userScene);

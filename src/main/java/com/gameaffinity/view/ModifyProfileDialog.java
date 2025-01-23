@@ -69,12 +69,12 @@ public class ModifyProfileDialog {
                               String newPassword) {
 
         try {
-            UserBase authenticated = userController.authenticate(email, password);
-            if (authenticated == null) {
-                showAlert("Error: Contraseña incorrecta o usuario no encontrado.", "Error", Alert.AlertType.WARNING);
-            }
+//            UserBase authenticated = userController.authenticate(email, password);
+//            if (authenticated == null) {
+//                showAlert("Error: Contraseña incorrecta o usuario no encontrado.", "Error", Alert.AlertType.WARNING);
+//            }
 
-            boolean success = userController.updateProfile(email, password, newName, newEmail,
+            boolean success = userController.updateProfile(password, newName, newEmail,
                     newPassword);
             if (success) {
                 showAlert("Perfil actualizado con éxito.", "Exito", Alert.AlertType.INFORMATION);

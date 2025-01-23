@@ -26,13 +26,13 @@ public class UserDashboardView {
 
     private UserBase user;
 
-    public void setUser(UserBase user){
+    public void setUser(UserBase user) {
         this.user = user;
     }
 
     public void initialize() {
         viewLibraryButton
-                .setOnAction(e ->openLibraryView(user));
+                .setOnAction(e -> openLibraryView(user));
         manageFriendsButton.setOnAction(
                 e -> openFriendshipView(user));
         viewGameDatabaseButton.setOnAction(
@@ -46,10 +46,7 @@ public class UserDashboardView {
             Stage currentStage = (Stage) viewLibraryButton.getScene().getWindow();
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/library/library_view.fxml"));
             Parent libraryView = loader.load();
-
-            LibraryView controller = loader.getController();
-            controller.setUser(user);
-
+            
             Scene libraryViewScene = new Scene(libraryView);
             currentStage.setScene(libraryViewScene);
         } catch (Exception e) {
@@ -62,7 +59,7 @@ public class UserDashboardView {
         try {
             Stage currentStage = (Stage) manageFriendsButton.getScene().getWindow();
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/friendship/friendship_view.fxml"));
-            Parent friendshipView =loader.load();
+            Parent friendshipView = loader.load();
 
             FriendshipView controller = loader.getController();
             controller.setUser(user);
@@ -81,8 +78,6 @@ public class UserDashboardView {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/gameDatabase/game_database_view.fxml"));
             Parent gameDatabaseView = loader.load();
 
-            GameDatabaseView controller = loader.getController();
-            controller.setUser(user);
 
             Scene gameDatabaseViewScene = new Scene(gameDatabaseView);
             currentStage.setScene(gameDatabaseViewScene);

@@ -15,12 +15,12 @@ public class FriendshipController {
         this.friendshipServiceAPI = new FriendshipServiceAPI(); // Inicializa el ApiService
     }
 
-    public List<UserBase> getFriends(int userId) {
-        return friendshipServiceAPI.getFriends(userId); // Llama al ApiService para obtener los amigos
+    public List<UserBase> getFriends() {
+        return friendshipServiceAPI.getFriends(); // Llama al ApiService para obtener los amigos
     }
 
-    public List<Friendship> getFriendRequests(int userId) {
-        return friendshipServiceAPI.getFriendRequests(userId); // Llama al ApiService para obtener las solicitudes de amistad
+    public List<Friendship> getFriendRequests() {
+        return friendshipServiceAPI.getFriendRequestsByToken(); // Llama al ApiService para obtener las solicitudes de amistad
     }
 
     public boolean respondToFriendRequest(Friendship friendship, String accepted) {
@@ -35,7 +35,7 @@ public class FriendshipController {
         return friendshipServiceAPI.sendFriendRequest(newFriendship); // Llama al ApiService para enviar una solicitud de amistad
     }
 
-    public boolean deleteFriend(int userId, int friendId) {
-        return friendshipServiceAPI.deleteFriend(userId, friendId); // Llama al ApiService para eliminar un amigo
+    public boolean deleteFriend(int friendId) {
+        return friendshipServiceAPI.deleteFriend(friendId); // Llama al ApiService para eliminar un amigo
     }
 }
