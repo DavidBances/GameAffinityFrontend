@@ -10,6 +10,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
+import org.springframework.beans.factory.annotation.Autowired;
 
 public class RegisterPanelView {
     @FXML
@@ -27,7 +28,8 @@ public class RegisterPanelView {
     @FXML
     private Button backButton;
 
-    private final RegisterController registerController = new RegisterController();
+    @Autowired
+    private RegisterController registerController;
 
     @FXML
     public void initialize() {

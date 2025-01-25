@@ -6,6 +6,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
+import org.springframework.beans.factory.annotation.Autowired;
 
 public class GameFormView {
 
@@ -21,7 +22,8 @@ public class GameFormView {
     @FXML
     private Button saveButton;
 
-    private final GameManagementController gameManagementController = new GameManagementController();
+    @Autowired
+    private GameManagementController gameManagementController;
 
     @FXML
     private void initialize() {

@@ -8,6 +8,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
+import org.springframework.beans.factory.annotation.Autowired;
 
 public class ModifyProfileDialog {
     @FXML
@@ -25,7 +26,8 @@ public class ModifyProfileDialog {
     @FXML
     private Button cancelButton;
 
-    private final UserController userController = new UserController();
+    @Autowired
+    private UserController userController;
 
     private boolean isUpdateDisabled() {
         return emailField.getText().trim().isEmpty() || passwordField.getText().trim().isEmpty();
@@ -42,8 +44,7 @@ public class ModifyProfileDialog {
 
         updateButton.setOnAction(
                 event -> {
-                    updateProfile(emailField.getText().trim(), passwordField.getText().trim(),
-                            newNameField.getText().trim(),
+                    updateProfile(newNameField.getText().trim(),
                             newEmailField.getText().trim(),
                             newPasswordField.getText().trim());
                     Stage stage = (Stage) updateButton.getScene().getWindow();
@@ -59,13 +60,11 @@ public class ModifyProfileDialog {
     /**
      * Updates the user's profile with new information.
      *
-     * @param email       The unique identifier (email) for the user.
-     * @param password    The current password of the user.
      * @param newName     The new name for the user (optional, can be null).
      * @param newEmail    The new email address for the user (optional, can be null).
      * @param newPassword The new password for the user (optional, can be null).
      */
-    public void updateProfile(String email, String password, String newName, String newEmail,
+    public void updateProfile(String newName, String newEmail,
                               String newPassword) {
 
         try {
@@ -74,8 +73,7 @@ public class ModifyProfileDialog {
 //                showAlert("Error: Contraseña incorrecta o usuario no encontrado.", "Error", Alert.AlertType.WARNING);
 //            }
 
-            boolean success = userController.updateProfile(password, newName, newEmail,
-                    newPassword);
+            boolean success = userController.updateProfile(newName, newEmail, newPassword);
             if (success) {
                 showAlert("Perfil actualizado con éxito.", "Exito", Alert.AlertType.INFORMATION);
             } else {

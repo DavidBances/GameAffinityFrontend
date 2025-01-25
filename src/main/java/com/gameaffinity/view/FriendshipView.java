@@ -12,6 +12,7 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 
@@ -38,7 +39,8 @@ public class FriendshipView {
     @FXML
     private Button backButton;
 
-    private final FriendshipController friendshipController = new FriendshipController();
+    @Autowired
+    private FriendshipController friendshipController;
     private UserBase user;
 
     public void initialize() {

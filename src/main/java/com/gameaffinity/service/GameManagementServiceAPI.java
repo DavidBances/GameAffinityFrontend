@@ -9,29 +9,36 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Service
 public class GameManagementServiceAPI {
 
     private static final String BASE_URL = "http://localhost:8080/api/games"; // URL del backend
     private final RestTemplate restTemplate;
+    private final UserServiceAPI userServiceAPI;  // Inyección de dependencia de UserServiceAPI
 
-    public GameManagementServiceAPI() {
-        this.restTemplate = new RestTemplate(); // Inicializa RestTemplate
+    @Autowired
+    public GameManagementServiceAPI(UserServiceAPI userServiceAPI) {
+        this.restTemplate = new RestTemplate();
+        this.userServiceAPI = userServiceAPI;  // Guardamos la referencia de UserServiceAPI
     }
 
     // Crear encabezados con el token JWT
     private HttpHeaders createHttpHeadersWithToken() {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
-        // Obtener el token JWT del contexto de seguridad actual
-        String jwtToken = org.springframework.security.core.context.SecurityContextHolder
-                .getContext()
-                .getAuthentication()
-                .getCredentials()
-                .toString();
-        headers.setBearerAuth(jwtToken); // Agregar el token como "Bearer"
+
+        // Obtener el token JWT desde UserServiceAPI
+        String jwtToken = userServiceAPI.getToken();  // Obtienes el token del servicio centralizado
+        if (jwtToken == null) {
+            throw new IllegalStateException("Token no disponible. El usuario debe iniciar sesión.");
+        }
+
+        headers.setBearerAuth(jwtToken);  // Agregar el token como "Bearer"
         return headers;
     }
 

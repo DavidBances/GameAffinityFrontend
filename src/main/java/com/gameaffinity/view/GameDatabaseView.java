@@ -13,6 +13,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 
@@ -41,7 +42,8 @@ public class GameDatabaseView {
     @FXML
     private Button backButton;
 
-    private final LibraryController libraryController = new LibraryController();
+    @Autowired
+    private LibraryController libraryController;
 
     public void initialize() {
         databaseTable.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);

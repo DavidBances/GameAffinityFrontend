@@ -9,6 +9,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.IOException;
 
@@ -29,7 +30,8 @@ public class GameManagementView {
     @FXML
     private Button deleteGameButton;
 
-    private final GameManagementController gameManagementController = new GameManagementController();
+    @Autowired
+    private GameManagementController gameManagementController;
 
     @FXML
     public void initialize() {

@@ -9,6 +9,7 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 
@@ -35,7 +36,8 @@ public class FriendLibraryView {
     @FXML
     private TableColumn<Game, Integer> scoreColumn;
 
-    private final LibraryController libraryController = new LibraryController();
+    @Autowired
+    private LibraryController libraryController;
 
     private UserBase user;
 

@@ -2,15 +2,19 @@ package com.gameaffinity.controller;
 
 import com.gameaffinity.model.Game;
 import com.gameaffinity.service.LibraryServiceAPI;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 
 import java.util.List;
 
+@Controller
 public class LibraryController {
 
     private final LibraryServiceAPI libraryServiceAPI;
 
-    public LibraryController() {
-        this.libraryServiceAPI = new LibraryServiceAPI();
+    @Autowired
+    public LibraryController(LibraryServiceAPI libraryServiceAPI) {
+        this.libraryServiceAPI = libraryServiceAPI;
     }
 
     public List<String> getAllGenres() {

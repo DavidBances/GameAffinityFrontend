@@ -1,5 +1,6 @@
 package com.gameaffinity.view;
 
+import com.gameaffinity.controller.AdminController;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -10,6 +11,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
+import org.springframework.beans.factory.annotation.Autowired;
 
 public class AdminDashboardView {
 
@@ -17,12 +19,13 @@ public class AdminDashboardView {
     public ImageView userManagementImage;
     @FXML
     public ImageView gameManagementImage;
-
     @FXML
     private StackPane mainContent;
-
     @FXML
     private Button logoutButton;
+
+    @Autowired
+    private AdminController adminController;
 
     @FXML
     public void initialize() {
@@ -69,6 +72,7 @@ public class AdminDashboardView {
 
     public void logout() {
         try {
+            adminController.logout();
             Stage currentStage = (Stage) mainContent.getScene().getWindow();
             Parent login = FXMLLoader.load(getClass().getResource("/fxml/auth/login_panel.fxml"));
             Scene loginScene = new Scene(login);

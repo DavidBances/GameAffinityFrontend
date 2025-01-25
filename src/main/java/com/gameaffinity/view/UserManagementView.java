@@ -11,6 +11,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.ComboBoxTableCell;
 import javafx.stage.Stage;
+import org.springframework.beans.factory.annotation.Autowired;
 
 public class UserManagementView {
 
@@ -32,7 +33,8 @@ public class UserManagementView {
     @FXML
     private Button deleteUserButton;
 
-    private final UserManagementController userManagementController = new UserManagementController();
+    @Autowired
+    private UserManagementController userManagementController;
 
     @FXML
     private void initialize() {

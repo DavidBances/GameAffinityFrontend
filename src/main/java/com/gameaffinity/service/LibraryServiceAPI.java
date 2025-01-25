@@ -7,28 +7,38 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Service
 public class LibraryServiceAPI {
 
     private static final String BASE_URL = "http://localhost:8080/api/library"; // Base URL del backend
     private final RestTemplate restTemplate;
+    private final UserServiceAPI userServiceAPI; // Inyección de dependencia para UserServiceAPI
 
-    public LibraryServiceAPI() {
-        this.restTemplate = new RestTemplate(); // Inicializar RestTemplate
+    @Autowired
+    public LibraryServiceAPI(UserServiceAPI userServiceAPI) {
+        this.restTemplate = new RestTemplate();
+        this.userServiceAPI = userServiceAPI; // Guardamos la referencia de UserServiceAPI
     }
 
     // Crear encabezados con el token JWT
     private HttpHeaders createHttpHeadersWithToken() {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
-        // Obtener el token del SecurityContext
-        String jwtToken = SecurityContextHolder.getContext().getAuthentication().getCredentials().toString();
-        headers.setBearerAuth(jwtToken);
+
+        // Obtener el token JWT desde UserServiceAPI
+        String jwtToken = userServiceAPI.getToken(); // Obtienes el token desde el servicio centralizado
+        if (jwtToken == null) {
+            throw new IllegalStateException("Token no disponible. El usuario debe iniciar sesión.");
+        }
+
+        headers.setBearerAuth(jwtToken); // Agregar el token como "Bearer"
         return headers;
     }
 
@@ -38,8 +48,7 @@ public class LibraryServiceAPI {
 
         HttpEntity<Object> entity = new HttpEntity<>(createHttpHeadersWithToken());
         ResponseEntity<List<String>> response = restTemplate.exchange(url, HttpMethod.GET, entity,
-                new ParameterizedTypeReference<List<String>>() {
-                });
+                new ParameterizedTypeReference<List<String>>() {});
         return response.getBody();
     }
 
@@ -49,8 +58,7 @@ public class LibraryServiceAPI {
 
         HttpEntity<Object> entity = new HttpEntity<>(createHttpHeadersWithToken());
         ResponseEntity<List<Game>> response = restTemplate.exchange(url, HttpMethod.GET, entity,
-                new ParameterizedTypeReference<List<Game>>() {
-                });
+                new ParameterizedTypeReference<List<Game>>() {});
         return response.getBody();
     }
 
@@ -60,11 +68,9 @@ public class LibraryServiceAPI {
 
         HttpEntity<Object> entity = new HttpEntity<>(createHttpHeadersWithToken());
         ResponseEntity<List<Game>> response = restTemplate.exchange(url, HttpMethod.GET, entity,
-                new ParameterizedTypeReference<List<Game>>() {
-                });
+                new ParameterizedTypeReference<List<Game>>() {});
         return response.getBody();
     }
-
 
     // Obtener juegos del usuario por género
     public List<Game> getGamesByGenreUser(String genre) {
@@ -72,8 +78,7 @@ public class LibraryServiceAPI {
 
         HttpEntity<Object> entity = new HttpEntity<>(createHttpHeadersWithToken());
         ResponseEntity<List<Game>> response = restTemplate.exchange(url, HttpMethod.GET, entity,
-                new ParameterizedTypeReference<List<Game>>() {
-                }, genre);
+                new ParameterizedTypeReference<List<Game>>() {}, genre);
         return response.getBody();
     }
 
@@ -83,8 +88,7 @@ public class LibraryServiceAPI {
 
         HttpEntity<Object> entity = new HttpEntity<>(createHttpHeadersWithToken());
         ResponseEntity<List<Game>> response = restTemplate.exchange(url, HttpMethod.GET, entity,
-                new ParameterizedTypeReference<List<Game>>() {
-                }, name);
+                new ParameterizedTypeReference<List<Game>>() {}, name);
         return response.getBody();
     }
 
@@ -94,8 +98,7 @@ public class LibraryServiceAPI {
 
         HttpEntity<Object> entity = new HttpEntity<>(createHttpHeadersWithToken());
         ResponseEntity<List<Game>> response = restTemplate.exchange(url, HttpMethod.GET, entity,
-                new ParameterizedTypeReference<List<Game>>() {
-                }, genre, name);
+                new ParameterizedTypeReference<List<Game>>() {}, genre, name);
         return response.getBody();
     }
 
@@ -105,8 +108,7 @@ public class LibraryServiceAPI {
 
         HttpEntity<Object> entity = new HttpEntity<>(createHttpHeadersWithToken());
         ResponseEntity<List<Game>> response = restTemplate.exchange(url, HttpMethod.GET, entity,
-                new ParameterizedTypeReference<List<Game>>() {
-                });
+                new ParameterizedTypeReference<List<Game>>() {});
         return response.getBody();
     }
 

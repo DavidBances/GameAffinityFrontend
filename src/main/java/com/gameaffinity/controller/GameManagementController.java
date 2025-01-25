@@ -2,15 +2,19 @@ package com.gameaffinity.controller;
 
 import com.gameaffinity.model.Game;
 import com.gameaffinity.service.GameManagementServiceAPI;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 
 import java.util.List;
 
+@Controller
 public class GameManagementController {
 
     private final GameManagementServiceAPI gameManagementServiceAPI;
 
-    public GameManagementController() {
-        this.gameManagementServiceAPI = new GameManagementServiceAPI();
+    @Autowired
+    public GameManagementController(GameManagementServiceAPI gameManagementServiceAPI) {
+        this.gameManagementServiceAPI = gameManagementServiceAPI;
     }
 
     public boolean addGame(String name, String genre, String priceText) {

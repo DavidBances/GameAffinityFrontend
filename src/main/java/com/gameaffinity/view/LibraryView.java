@@ -16,6 +16,7 @@ import javafx.scene.control.cell.ComboBoxTableCell;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.stage.Stage;
 import javafx.util.converter.IntegerStringConverter;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 
@@ -48,7 +49,8 @@ public class LibraryView {
     @FXML
     private Button backButton;
 
-    private final LibraryController libraryController = new LibraryController();
+    @Autowired
+    private LibraryController libraryController;
 
     public void initialize() {
         gamesTable.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);

@@ -3,16 +3,19 @@ package com.gameaffinity.controller;
 import com.gameaffinity.model.Friendship;
 import com.gameaffinity.model.UserBase;
 import com.gameaffinity.service.FriendshipServiceAPI;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 
 import java.util.List;
 
+@Controller
 public class FriendshipController {
 
     private final FriendshipServiceAPI friendshipServiceAPI;
 
-    // Constructor
-    public FriendshipController() {
-        this.friendshipServiceAPI = new FriendshipServiceAPI(); // Inicializa el ApiService
+    @Autowired
+    public FriendshipController(FriendshipServiceAPI friendshipServiceAPI) {
+        this.friendshipServiceAPI = friendshipServiceAPI; // Inicializa el ApiService
     }
 
     public List<UserBase> getFriends() {

@@ -1,21 +1,20 @@
 package com.gameaffinity.controller;
 
-import com.gameaffinity.model.UserBase;
 import com.gameaffinity.service.UserServiceAPI;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 
+@Controller
 public class UserController {
 
     private final UserServiceAPI userServiceAPI;
 
-    public UserController() {
-        this.userServiceAPI = new UserServiceAPI();
+    @Autowired
+    public UserController(UserServiceAPI userServiceAPI) {
+        this.userServiceAPI = userServiceAPI;
     }
 
-//    public UserBase authenticate(String email, String password) {
-//        return userServiceAPI.login(email, password);
-//    }
-
-    public boolean updateProfile(String password, String newName, String newEmail, String newPassword) {
-        return userServiceAPI.updateProfile(password, newName, newEmail, newPassword);
+    public boolean updateProfile(String newName, String newEmail, String newPassword) {
+        return userServiceAPI.updateProfile(newName, newEmail, newPassword);
     }
 }

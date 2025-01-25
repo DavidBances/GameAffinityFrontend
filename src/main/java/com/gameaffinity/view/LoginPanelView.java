@@ -1,7 +1,6 @@
 package com.gameaffinity.view;
 
 import com.gameaffinity.controller.LoginController;
-import com.gameaffinity.model.UserBase;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -11,6 +10,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
+import org.springframework.beans.factory.annotation.Autowired;
 
 public class LoginPanelView {
 
@@ -23,12 +23,9 @@ public class LoginPanelView {
     @FXML
     private Button registerButton;
 
-    private LoginController loginController = new LoginController();
+    @Autowired
+    private LoginController loginController;
 
-    // Establecer el controlador de Login
-    public void setLoginController(LoginController loginController) {
-        this.loginController = loginController;
-    }
 
     @FXML
     public void initialize() {
