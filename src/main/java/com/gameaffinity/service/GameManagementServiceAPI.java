@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class GameManagementServiceAPI {
@@ -44,6 +45,7 @@ public class GameManagementServiceAPI {
 
     // Agregar un juego
     public boolean addGame(String name, String genre, String priceText) {
+        System.out.println("Hola");
         String url = BASE_URL + "/add";
 
         // Construir la URL con los parámetros de consulta
@@ -53,12 +55,16 @@ public class GameManagementServiceAPI {
                 .queryParam("priceText", priceText)
                 .toUriString();
 
+        System.out.println(finalUrl);
         // Crear una entidad HTTP con los encabezados que incluyen el token
         HttpEntity<Void> entity = new HttpEntity<>(createHttpHeadersWithToken());
 
         // Realiza la solicitud al backend (con método POST)
-        ResponseEntity<Boolean> response = restTemplate.exchange(finalUrl, HttpMethod.POST, entity, Boolean.class);
-        return response.getBody() != null && response.getBody();
+        ResponseEntity<Map<String, Object>> response = restTemplate.exchange(finalUrl, HttpMethod.POST, entity, new ParameterizedTypeReference<Map<String, Object>>() {
+        });
+        System.out.println(response.getBody());
+        Boolean success = (Boolean) response.getBody().get("success");
+        return success != null && success;
     }
 
     // Obtener todos los juegos
@@ -90,7 +96,9 @@ public class GameManagementServiceAPI {
         HttpEntity<Void> entity = new HttpEntity<>(createHttpHeadersWithToken());
 
         // Realiza la solicitud al backend (con método DELETE)
-        ResponseEntity<Boolean> response = restTemplate.exchange(finalUrl, HttpMethod.DELETE, entity, Boolean.class);
-        return response.getBody() != null && response.getBody();
+        ResponseEntity<Map<String, Object>> response = restTemplate.exchange(finalUrl, HttpMethod.DELETE, entity, new ParameterizedTypeReference<Map<String, Object>>() {
+        });
+        Boolean success = (Boolean) response.getBody().get("success");
+        return success != null && success;
     }
 }

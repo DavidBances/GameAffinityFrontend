@@ -1,6 +1,7 @@
 package com.gameaffinity.view;
 
 import com.gameaffinity.controller.LoginController;
+import com.gameaffinity.util.SpringFXMLLoader;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -11,7 +12,9 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
+@Component
 public class LoginPanelView {
 
     @FXML
@@ -23,6 +26,8 @@ public class LoginPanelView {
     @FXML
     private Button registerButton;
 
+    @Autowired
+    private SpringFXMLLoader springFXMLLoader;
     @Autowired
     private LoginController loginController;
 
@@ -43,14 +48,18 @@ public class LoginPanelView {
     public void login(String email, String password) {
         try {
             Stage currentStage = (Stage) loginButton.getScene().getWindow();
+
             String role = loginController.login(email, password);
+            System.out.println(role);
+
             if (role != null) {
                 if ("ADMINISTRATOR".equalsIgnoreCase(role)) {
-                    Parent adminDashboard = FXMLLoader.load(getClass().getResource("/fxml/admin/admin_dashboard.fxml"));
+                    FXMLLoader loader = springFXMLLoader.loadFXML("/fxml/admin/admin_dashboard.fxml");
+                    Parent adminDashboard = loader.load();
                     Scene adminScene = new Scene(adminDashboard);
                     currentStage.setScene(adminScene);
                 } else {
-                    FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/user/user_dashboard.fxml"));
+                    FXMLLoader loader = springFXMLLoader.loadFXML("/fxml/user/user_dashboard.fxml");
                     Parent userDashboard = loader.load();
 
                     Scene userScene = new Scene(userDashboard);
@@ -70,7 +79,8 @@ public class LoginPanelView {
     public void register() {
         try {
             Stage currentStage = (Stage) loginButton.getScene().getWindow();
-            Parent registerPane = FXMLLoader.load(getClass().getResource("/fxml/auth/register_panel.fxml"));
+            FXMLLoader loader = springFXMLLoader.loadFXML("/fxml/auth/register_panel.fxml");
+            Parent registerPane = loader.load();
             Scene registerScene = new Scene(registerPane);
             currentStage.setScene(registerScene);
         } catch (Exception e) {

@@ -16,7 +16,11 @@ public class LoginController {
     }
 
     public String login(String email, String password) {
-        userServiceAPI.login(email, password);
-        return userServiceAPI.getRole();
+        String token = userServiceAPI.login(email, password);
+        System.out.println(token);
+        if (token != null && !token.isEmpty()) {
+            userServiceAPI.setToken(token);
+        }
+        return userServiceAPI.getRoleFromToken();
     }
 }

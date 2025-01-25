@@ -4,7 +4,6 @@ import com.gameaffinity.model.UserBase;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.interfaces.DecodedJWT;
-import com.auth0.jwt.algorithms.Algorithm;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
@@ -43,7 +42,8 @@ public class UserServiceAPI {
                 .toUriString();
 
         ResponseEntity<Map<String, Object>> response = restTemplate.exchange(finalUrl, HttpMethod.POST, null,
-                new ParameterizedTypeReference<Map<String, Object>>() {});
+                new ParameterizedTypeReference<Map<String, Object>>() {
+                });
 
         this.token = (String) response.getBody().get("token");  // Almacenar el token
         return this.token;
@@ -55,11 +55,8 @@ public class UserServiceAPI {
         }
 
         try {
-            DecodedJWT jwt = JWT.require(Algorithm.HMAC256("claveSecretaSuperSegura"))
-                    .build()
-                    .verify(token);
-
-            return jwt.getSubject();  // Sujeto (email) del token
+            DecodedJWT jwt = JWT.decode(token);
+            return jwt.getSubject();
         } catch (Exception e) {
             throw new IllegalArgumentException("Token inválido o corrupto.");
         }
@@ -71,11 +68,8 @@ public class UserServiceAPI {
         }
 
         try {
-            DecodedJWT jwt = JWT.require(Algorithm.HMAC256("claveSecretaSuperSegura"))
-                    .build()
-                    .verify(token);
-
-            return jwt.getClaim("userId").asInt();  // Suponiendo que el token tiene un claim "userId"
+            DecodedJWT jwt = JWT.decode(token);
+            return jwt.getClaim("id").asInt(); // Suponiendo que el token tiene un claim "userId"
         } catch (Exception e) {
             throw new IllegalArgumentException("Token inválido o corrupto.");
         }
@@ -87,11 +81,9 @@ public class UserServiceAPI {
         }
 
         try {
-            DecodedJWT jwt = JWT.require(Algorithm.HMAC256("claveSecretaSuperSegura"))
-                    .build()
-                    .verify(token);
-
-            return jwt.getClaim("role").asString();  // Suponiendo que el token tiene un claim llamado "role"
+            DecodedJWT jwt = JWT.decode(token);
+            System.out.println(jwt.getClaim("roles").asList(String.class));
+            return jwt.getClaim("roles").asList(String.class).getFirst();  // Suponiendo que el token tiene un claim llamado "role"
         } catch (Exception e) {
             throw new IllegalArgumentException("Token inválido o corrupto.");
         }
@@ -119,7 +111,7 @@ public class UserServiceAPI {
                 .queryParam("password", password)
                 .toUriString();
         ResponseEntity<String> response = restTemplate.exchange(finalUrl, HttpMethod.POST, null, String.class);
-        return response.getBody();
+        return response.getBody() != null ? response.getBody() : "El resultado ha sido null";
     }
 
     public boolean updateProfile(String newName, String newEmail, String newPassword) {
@@ -131,16 +123,22 @@ public class UserServiceAPI {
                 .toUriString();
 
         HttpEntity<Object> entity = new HttpEntity<>(createHttpHeadersWithToken());
-        ResponseEntity<Boolean> response = restTemplate.exchange(finalUrl, HttpMethod.PUT, entity, Boolean.class);
-        return response.getBody() != null && response.getBody();
+        ResponseEntity<Map<String, Object>> response = restTemplate.exchange(finalUrl, HttpMethod.PUT, entity, new ParameterizedTypeReference<Map<String, Object>>() {
+        });
+
+        // Obtener el valor booleano del mapa
+        Boolean success = (Boolean) response.getBody().get("success");
+        return success != null && success;
     }
 
 
     public boolean updateUserRole(UserBase user, String newRole) {
         String url = BASE_URL + "/user-management/update-role?newRole={newRole}";
         HttpEntity<UserBase> entity = new HttpEntity<>(user, createHttpHeadersWithToken());
-        ResponseEntity<Boolean> response = restTemplate.exchange(url, HttpMethod.PUT, entity, Boolean.class, newRole);
-        return response.getBody() != null && response.getBody();
+        ResponseEntity<Map<String, Object>> response = restTemplate.exchange(url, HttpMethod.PUT, entity, new ParameterizedTypeReference<Map<String, Object>>() {
+        }, newRole);
+        Boolean success = (Boolean) response.getBody().get("success");
+        return success != null && success;
     }
 
 
@@ -148,7 +146,8 @@ public class UserServiceAPI {
         String url = BASE_URL + "/user-management/all";
         HttpEntity<Object> entity = new HttpEntity<>(createHttpHeadersWithToken());
         ResponseEntity<List<UserBase>> response = restTemplate.exchange(url, HttpMethod.GET, entity,
-                new ParameterizedTypeReference<List<UserBase>>() {});
+                new ParameterizedTypeReference<List<UserBase>>() {
+                });
         return response.getBody();
     }
 
@@ -157,15 +156,10 @@ public class UserServiceAPI {
         String url = BASE_URL + "/user-management/delete";
 
         HttpEntity<UserBase> entity = new HttpEntity<>(user, createHttpHeadersWithToken());
-        ResponseEntity<Boolean> response = restTemplate.exchange(url, HttpMethod.DELETE, entity, Boolean.class);
-        return response.getBody() != null && response.getBody();
-    }
-
-    public String getRole() {
-        String url = BASE_URL + "/users/getRole";
-        HttpEntity<Object> entity = new HttpEntity<>(createHttpHeadersWithToken());
-        ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, entity, String.class);
-        return response.getBody();
+        ResponseEntity<Map<String, Object>> response = restTemplate.exchange(url, HttpMethod.DELETE, entity, new ParameterizedTypeReference<Map<String, Object>>() {
+        });
+        Boolean success = (Boolean) response.getBody().get("success");
+        return success != null && success;
     }
 
     public void logout() {

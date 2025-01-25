@@ -3,6 +3,7 @@ package com.gameaffinity.view;
 import com.gameaffinity.controller.FriendshipController;
 import com.gameaffinity.model.Friendship;
 import com.gameaffinity.model.UserBase;
+import com.gameaffinity.util.SpringFXMLLoader;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
@@ -13,9 +14,12 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.List;
 
+@Component
 public class FriendshipView {
 
     @FXML
@@ -40,8 +44,9 @@ public class FriendshipView {
     private Button backButton;
 
     @Autowired
+    private SpringFXMLLoader springFXMLLoader;
+    @Autowired
     private FriendshipController friendshipController;
-    private UserBase user;
 
     public void initialize() {
         friendsTable.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
@@ -84,6 +89,9 @@ public class FriendshipView {
             }
         });
 
+        refreshFriendsList();
+        refreshPendingRequests();
+
         // Event handlers for buttons
         sendRequestButton.setOnAction(e -> sendFriendRequest());
         viewFriendLibraryButton.setOnAction(e -> viewFriendLibrary());
@@ -91,19 +99,19 @@ public class FriendshipView {
         backButton.setOnAction(e -> goBack());
     }
 
-    public void setUser(UserBase user) {
-        this.user = user;
-        refreshFriendsList();
-        refreshPendingRequests();
-    }
-
     private void refreshFriendsList() {
         List<UserBase> friends = friendshipController.getFriends();
+        if (friends == null) {
+            friends = new ArrayList<>(); // O cualquier otra lista vacía, dependiendo de tu caso
+        }
         friendsTable.getItems().setAll(friends);
     }
 
     private void refreshPendingRequests() {
         List<Friendship> requests = friendshipController.getFriendRequests();
+        if (requests == null) {
+            requests = new ArrayList<>(); // O cualquier otra lista vacía, dependiendo de tu caso
+        }
         requestsTable.getItems().setAll(requests);
     }
 
@@ -134,10 +142,8 @@ public class FriendshipView {
         String receiverEmail = showInputDialog("Enter the User email of the person you want to add:");
         int receiverId = friendshipController.getUserIdByEmail(receiverEmail);
 
-        Friendship newFriendship = new Friendship(0, this.user.getId(), this.user.getEmail(), receiverId, "Pending");
-
         if (receiverId != -1) {
-            boolean success = friendshipController.sendFriendRequest(newFriendship);
+            boolean success = friendshipController.sendFriendRequest(receiverEmail);
             showAlert(success ? "Friend request sent!" : "Failed to send friend request.", "", success ? Alert.AlertType.INFORMATION : Alert.AlertType.ERROR);
         } else {
             showAlert("Invalid User Email.", "Error", Alert.AlertType.ERROR);
@@ -149,7 +155,7 @@ public class FriendshipView {
         if (selectedFriend != null) {
             try {
                 Stage newStage = new Stage();
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/friendship/friend_library_view.fxml"));
+                FXMLLoader loader = springFXMLLoader.loadFXML("/fxml/friendship/friend_library_view.fxml");
                 Parent friendLibraryView = loader.load();
 
                 FriendLibraryView controller = loader.getController();
@@ -187,11 +193,8 @@ public class FriendshipView {
     private void goBack() {
         try {
             Stage currentStage = (Stage) friendsTable.getScene().getWindow();
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/user/user_dashboard.fxml"));
+            FXMLLoader loader = springFXMLLoader.loadFXML("/fxml/user/user_dashboard.fxml");
             Parent userDashboard = loader.load();
-
-            UserDashboardView controller = loader.getController();
-            controller.setUser(this.user);
 
             Scene userScene = new Scene(userDashboard);
             currentStage.setScene(userScene);

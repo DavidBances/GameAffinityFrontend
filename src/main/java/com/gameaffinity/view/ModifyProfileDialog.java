@@ -9,12 +9,10 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
+@Component
 public class ModifyProfileDialog {
-    @FXML
-    private TextField emailField;
-    @FXML
-    private PasswordField passwordField;
     @FXML
     private TextField newNameField;
     @FXML
@@ -29,18 +27,8 @@ public class ModifyProfileDialog {
     @Autowired
     private UserController userController;
 
-    private boolean isUpdateDisabled() {
-        return emailField.getText().trim().isEmpty() || passwordField.getText().trim().isEmpty();
-    }
-
     @FXML
     private void initialize() {
-
-        updateButton.setDisable(isUpdateDisabled());
-        emailField.textProperty()
-                .addListener((observable, oldValue, newValue) -> updateButton.setDisable(isUpdateDisabled()));
-        passwordField.textProperty()
-                .addListener((observable, oldValue, newValue) -> updateButton.setDisable(isUpdateDisabled()));
 
         updateButton.setOnAction(
                 event -> {
@@ -68,11 +56,6 @@ public class ModifyProfileDialog {
                               String newPassword) {
 
         try {
-//            UserBase authenticated = userController.authenticate(email, password);
-//            if (authenticated == null) {
-//                showAlert("Error: Contraseña incorrecta o usuario no encontrado.", "Error", Alert.AlertType.WARNING);
-//            }
-
             boolean success = userController.updateProfile(newName, newEmail, newPassword);
             if (success) {
                 showAlert("Perfil actualizado con éxito.", "Exito", Alert.AlertType.INFORMATION);

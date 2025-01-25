@@ -17,4 +17,8 @@ public class UserController {
     public boolean updateProfile(String newName, String newEmail, String newPassword) {
         return userServiceAPI.updateProfile(newName, newEmail, newPassword);
     }
+
+    public void logout() {
+        userServiceAPI.logout();
+    }
 }

@@ -34,8 +34,8 @@ public class FriendshipController {
         return friendshipServiceAPI.getUserIdByEmail(email); // Llama al ApiService para obtener el ID del usuario por correo
     }
 
-    public boolean sendFriendRequest(Friendship newFriendship) {
-        return friendshipServiceAPI.sendFriendRequest(newFriendship); // Llama al ApiService para enviar una solicitud de amistad
+    public boolean sendFriendRequest(String friendEmail) {
+        return friendshipServiceAPI.sendFriendRequest(friendEmail); // Llama al ApiService para enviar una solicitud de amistad
     }
 
     public boolean deleteFriend(int friendId) {

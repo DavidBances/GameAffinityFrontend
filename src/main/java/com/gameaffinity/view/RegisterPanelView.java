@@ -1,6 +1,7 @@
 package com.gameaffinity.view;
 
 import com.gameaffinity.controller.RegisterController;
+import com.gameaffinity.util.SpringFXMLLoader;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -11,7 +12,9 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
+@Component
 public class RegisterPanelView {
     @FXML
     private TextField nameField;
@@ -28,6 +31,8 @@ public class RegisterPanelView {
     @FXML
     private Button backButton;
 
+    @Autowired
+    private SpringFXMLLoader springFXMLLoader;
     @Autowired
     private RegisterController registerController;
 
@@ -48,7 +53,8 @@ public class RegisterPanelView {
 
     public void back(Stage currentStage) {
         try {
-            Parent login = FXMLLoader.load(getClass().getResource("/fxml/auth/login_panel.fxml"));
+            FXMLLoader loader = springFXMLLoader.loadFXML("/fxml/auth/login_panel.fxml");
+            Parent login = loader.load();
             Scene loginScene = new Scene(login);
             currentStage.setScene(loginScene);
         } catch (Exception e) {

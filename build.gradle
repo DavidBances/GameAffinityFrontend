@@ -2,7 +2,7 @@ plugins {
     id 'application'
     id 'org.openjfx.javafxplugin' version '0.0.13' // Plugin para JavaFX
     id 'java'
-    id 'org.springframework.boot' version '2.7.5'  // Asegúrate de que la versión esté acorde con tu proyecto
+    id 'org.springframework.boot' version '3.2.2'  // Asegúrate de que la versión esté acorde con tu proyecto
     id 'io.spring.dependency-management' version '1.0.14.RELEASE'
 }
 
@@ -29,7 +29,7 @@ dependencies {
     implementation 'com.auth0:java-jwt:4.4.0'
 
     // Librería JSON para parsear respuestas de la API
-    implementation 'com.fasterxml.jackson.core:jackson-databind:2.16.0'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.15.2'
 
     // Librería Guava para utilidades generales
     implementation 'com.google.guava:guava:31.1-jre'

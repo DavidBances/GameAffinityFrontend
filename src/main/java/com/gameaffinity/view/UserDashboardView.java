@@ -1,6 +1,7 @@
 package com.gameaffinity.view;
 
-import com.gameaffinity.model.UserBase;
+import com.gameaffinity.controller.UserController;
+import com.gameaffinity.util.SpringFXMLLoader;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -8,9 +9,12 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.stage.Stage;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 
+@Component
 public class UserDashboardView {
 
     @FXML
@@ -24,29 +28,28 @@ public class UserDashboardView {
     @FXML
     private Button logoutButton;
 
-    private UserBase user;
-
-    public void setUser(UserBase user) {
-        this.user = user;
-    }
+    @Autowired
+    private SpringFXMLLoader springFXMLLoader;
+    @Autowired
+    private UserController userController;
 
     public void initialize() {
         viewLibraryButton
-                .setOnAction(e -> openLibraryView(user));
+                .setOnAction(e -> openLibraryView());
         manageFriendsButton.setOnAction(
-                e -> openFriendshipView(user));
+                e -> openFriendshipView());
         viewGameDatabaseButton.setOnAction(
-                e -> openGameDatabaseView(user));
+                e -> openGameDatabaseView());
         modifyProfileButton.setOnAction(e -> openModifyProfileDialog());
         logoutButton.setOnAction(e -> logout());
     }
 
-    public void openLibraryView(UserBase user) {
+    public void openLibraryView() {
         try {
             Stage currentStage = (Stage) viewLibraryButton.getScene().getWindow();
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/library/library_view.fxml"));
+            FXMLLoader loader = springFXMLLoader.loadFXML("/fxml/library/library_view.fxml");
             Parent libraryView = loader.load();
-            
+
             Scene libraryViewScene = new Scene(libraryView);
             currentStage.setScene(libraryViewScene);
         } catch (Exception e) {
@@ -55,14 +58,11 @@ public class UserDashboardView {
         }
     }
 
-    public void openFriendshipView(UserBase user) {
+    public void openFriendshipView() {
         try {
             Stage currentStage = (Stage) manageFriendsButton.getScene().getWindow();
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/friendship/friendship_view.fxml"));
+            FXMLLoader loader = springFXMLLoader.loadFXML("/fxml/friendship/friendship_view.fxml");
             Parent friendshipView = loader.load();
-
-            FriendshipView controller = loader.getController();
-            controller.setUser(user);
 
             Scene friendshipViewScene = new Scene(friendshipView);
             currentStage.setScene(friendshipViewScene);
@@ -72,12 +72,11 @@ public class UserDashboardView {
         }
     }
 
-    public void openGameDatabaseView(UserBase user) {
+    public void openGameDatabaseView() {
         try {
             Stage currentStage = (Stage) viewGameDatabaseButton.getScene().getWindow();
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/gameDatabase/game_database_view.fxml"));
+            FXMLLoader loader = springFXMLLoader.loadFXML("/fxml/gameDatabase/game_database_view.fxml");
             Parent gameDatabaseView = loader.load();
-
 
             Scene gameDatabaseViewScene = new Scene(gameDatabaseView);
             currentStage.setScene(gameDatabaseViewScene);
@@ -90,7 +89,7 @@ public class UserDashboardView {
     public void openModifyProfileDialog() {
         try {
             // Cargar el FXML
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/dialogs/modify_profile_dialog.fxml"));
+            FXMLLoader loader = springFXMLLoader.loadFXML("/fxml/dialogs/modify_profile_dialog.fxml");
             Parent root = loader.load();
 
             Stage stage = new Stage();
@@ -105,8 +104,10 @@ public class UserDashboardView {
 
     public void logout() {
         try {
+            userController.logout();
             Stage currentStage = (Stage) logoutButton.getScene().getWindow();
-            Parent loginPane = FXMLLoader.load(getClass().getResource("/fxml/auth/login_panel.fxml"));
+            FXMLLoader loader = springFXMLLoader.loadFXML("/fxml/auth/login_panel.fxml");
+            Parent loginPane = loader.load();
             Scene loginPaneScene = new Scene(loginPane);
             currentStage.setScene(loginPaneScene);
         } catch (Exception e) {

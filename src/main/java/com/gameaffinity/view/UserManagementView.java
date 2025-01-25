@@ -2,6 +2,7 @@ package com.gameaffinity.view;
 
 import com.gameaffinity.controller.UserManagementController;
 import com.gameaffinity.model.UserBase;
+import com.gameaffinity.util.SpringFXMLLoader;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
@@ -12,7 +13,9 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.ComboBoxTableCell;
 import javafx.stage.Stage;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
+@Component
 public class UserManagementView {
 
     @FXML
@@ -34,6 +37,8 @@ public class UserManagementView {
     private Button deleteUserButton;
 
     @Autowired
+    private SpringFXMLLoader springFXMLLoader;
+    @Autowired
     private UserManagementController userManagementController;
 
     @FXML
@@ -51,9 +56,9 @@ public class UserManagementView {
         roleColumn.setOnEditCommit(event -> {
             UserBase user = event.getRowValue();
             String newRole = event.getNewValue();
-            if (userManagementController.updateUserRole(user, newRole)){
+            if (userManagementController.updateUserRole(user, newRole)) {
                 showAlert("Rol modificado con éxito.", "Exito", Alert.AlertType.INFORMATION);
-            }else{
+            } else {
                 showAlert("Failed to modify role.", "Error", Alert.AlertType.ERROR);
             }
             refreshUserTable();
@@ -75,7 +80,7 @@ public class UserManagementView {
         userTable.getItems().addAll(userManagementController.getAllUsers());
     }
 
-    public void deleteUser(UserBase user){
+    public void deleteUser(UserBase user) {
         if (user != null) {
             boolean confirmed = showConfirmationDialog("Are you sure you want to delete this user?");
             if (confirmed) {
@@ -91,13 +96,14 @@ public class UserManagementView {
         }
     }
 
-    public void back(){
-        try{
+    public void back() {
+        try {
             Stage currentStage = (Stage) backButton.getScene().getWindow();
-            Parent adminDashboard = FXMLLoader.load(getClass().getResource("/fxml/admin/admin_dashboard.fxml"));
+            FXMLLoader loader = springFXMLLoader.loadFXML("/fxml/admin/admin_dashboard.fxml");
+            Parent adminDashboard = loader.load();
             Scene adminScene = new Scene(adminDashboard);
             currentStage.setScene(adminScene);
-        }catch(Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

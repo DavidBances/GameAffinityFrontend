@@ -1,6 +1,7 @@
 package com.gameaffinity.view;
 
 import com.gameaffinity.controller.AdminController;
+import com.gameaffinity.util.SpringFXMLLoader;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -12,7 +13,9 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
+@Component
 public class AdminDashboardView {
 
     @FXML
@@ -24,6 +27,8 @@ public class AdminDashboardView {
     @FXML
     private Button logoutButton;
 
+    @Autowired
+    private SpringFXMLLoader springFXMLLoader;
     @Autowired
     private AdminController adminController;
 
@@ -49,7 +54,8 @@ public class AdminDashboardView {
     public void openUserManagementView() {
         try {
             Stage currentStage = (Stage) userManagementImage.getScene().getWindow();
-            Parent userManagement = FXMLLoader.load(getClass().getResource("/fxml/admin/user_management.fxml"));
+            FXMLLoader loader = springFXMLLoader.loadFXML("/fxml/admin/user_management.fxml");
+            Parent userManagement = loader.load();
             Scene userManagementScene = new Scene(userManagement);
             currentStage.setScene(userManagementScene);
         } catch (Exception e) {
@@ -61,7 +67,8 @@ public class AdminDashboardView {
     public void openGamesManagementView() {
         try {
             Stage currentStage = (Stage) gameManagementImage.getScene().getWindow();
-            Parent gameManagement = FXMLLoader.load(getClass().getResource("/fxml/admin/game_management.fxml"));
+            FXMLLoader loader = springFXMLLoader.loadFXML("/fxml/admin/game_management.fxml");
+            Parent gameManagement = loader.load();
             Scene gameManagementScene = new Scene(gameManagement);
             currentStage.setScene(gameManagementScene);
         } catch (Exception e) {
@@ -74,7 +81,8 @@ public class AdminDashboardView {
         try {
             adminController.logout();
             Stage currentStage = (Stage) mainContent.getScene().getWindow();
-            Parent login = FXMLLoader.load(getClass().getResource("/fxml/auth/login_panel.fxml"));
+            FXMLLoader loader = springFXMLLoader.loadFXML("/fxml/auth/login_panel.fxml");
+            Parent login = loader.load();
             Scene loginScene = new Scene(login);
             currentStage.setScene(loginScene);
         } catch (Exception e) {

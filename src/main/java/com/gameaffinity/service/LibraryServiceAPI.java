@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class LibraryServiceAPI {
@@ -34,6 +35,7 @@ public class LibraryServiceAPI {
 
         // Obtener el token JWT desde UserServiceAPI
         String jwtToken = userServiceAPI.getToken(); // Obtienes el token desde el servicio centralizado
+        System.out.println("Token JWT: " + jwtToken);
         if (jwtToken == null) {
             throw new IllegalStateException("Token no disponible. El usuario debe iniciar sesión.");
         }
@@ -48,7 +50,8 @@ public class LibraryServiceAPI {
 
         HttpEntity<Object> entity = new HttpEntity<>(createHttpHeadersWithToken());
         ResponseEntity<List<String>> response = restTemplate.exchange(url, HttpMethod.GET, entity,
-                new ParameterizedTypeReference<List<String>>() {});
+                new ParameterizedTypeReference<List<String>>() {
+                });
         return response.getBody();
     }
 
@@ -58,17 +61,20 @@ public class LibraryServiceAPI {
 
         HttpEntity<Object> entity = new HttpEntity<>(createHttpHeadersWithToken());
         ResponseEntity<List<Game>> response = restTemplate.exchange(url, HttpMethod.GET, entity,
-                new ParameterizedTypeReference<List<Game>>() {});
+                new ParameterizedTypeReference<List<Game>>() {
+                });
+        System.out.println(response.getBody());
         return response.getBody();
     }
 
     // Obtener biblioteca de un amigo usando su userId
     public List<Game> getAllGamesByFriend(int friendId) {
-        String url = BASE_URL + "/friend/" + friendId;
+        String url = BASE_URL + "/friendId?friendId=" + friendId;
 
         HttpEntity<Object> entity = new HttpEntity<>(createHttpHeadersWithToken());
         ResponseEntity<List<Game>> response = restTemplate.exchange(url, HttpMethod.GET, entity,
-                new ParameterizedTypeReference<List<Game>>() {});
+                new ParameterizedTypeReference<List<Game>>() {
+                });
         return response.getBody();
     }
 
@@ -78,7 +84,8 @@ public class LibraryServiceAPI {
 
         HttpEntity<Object> entity = new HttpEntity<>(createHttpHeadersWithToken());
         ResponseEntity<List<Game>> response = restTemplate.exchange(url, HttpMethod.GET, entity,
-                new ParameterizedTypeReference<List<Game>>() {}, genre);
+                new ParameterizedTypeReference<List<Game>>() {
+                }, genre);
         return response.getBody();
     }
 
@@ -88,7 +95,8 @@ public class LibraryServiceAPI {
 
         HttpEntity<Object> entity = new HttpEntity<>(createHttpHeadersWithToken());
         ResponseEntity<List<Game>> response = restTemplate.exchange(url, HttpMethod.GET, entity,
-                new ParameterizedTypeReference<List<Game>>() {}, name);
+                new ParameterizedTypeReference<List<Game>>() {
+                }, name);
         return response.getBody();
     }
 
@@ -98,17 +106,8 @@ public class LibraryServiceAPI {
 
         HttpEntity<Object> entity = new HttpEntity<>(createHttpHeadersWithToken());
         ResponseEntity<List<Game>> response = restTemplate.exchange(url, HttpMethod.GET, entity,
-                new ParameterizedTypeReference<List<Game>>() {}, genre, name);
-        return response.getBody();
-    }
-
-    // Obtener todos los juegos de la biblioteca (sin filtrar por usuario)
-    public List<Game> getAllGames() {
-        String url = BASE_URL + "/all";
-
-        HttpEntity<Object> entity = new HttpEntity<>(createHttpHeadersWithToken());
-        ResponseEntity<List<Game>> response = restTemplate.exchange(url, HttpMethod.GET, entity,
-                new ParameterizedTypeReference<List<Game>>() {});
+                new ParameterizedTypeReference<List<Game>>() {
+                }, genre, name);
         return response.getBody();
     }
 
@@ -129,8 +128,10 @@ public class LibraryServiceAPI {
                 .toUriString();
 
         HttpEntity<Object> entity = new HttpEntity<>(createHttpHeadersWithToken());
-        ResponseEntity<Boolean> response = restTemplate.exchange(finalUrl, HttpMethod.POST, entity, Boolean.class);
-        return response.getBody() != null && response.getBody();
+        ResponseEntity<Map<String, Object>> response = restTemplate.exchange(finalUrl, HttpMethod.POST, entity, new ParameterizedTypeReference<Map<String, Object>>() {
+        });
+        Boolean success = (Boolean) response.getBody().get("success");
+        return success != null && success;
     }
 
     // Actualizar el estado del juego
@@ -142,8 +143,10 @@ public class LibraryServiceAPI {
                 .toUriString();
 
         HttpEntity<Object> entity = new HttpEntity<>(createHttpHeadersWithToken());
-        ResponseEntity<Boolean> response = restTemplate.exchange(finalUrl, HttpMethod.PUT, entity, Boolean.class);
-        return response.getBody() != null && response.getBody();
+        ResponseEntity<Map<String, Object>> response = restTemplate.exchange(finalUrl, HttpMethod.PUT, entity, new ParameterizedTypeReference<Map<String, Object>>() {
+        });
+        Boolean success = (Boolean) response.getBody().get("success");
+        return success != null && success;
     }
 
     // Actualizar la puntuación del juego
@@ -155,8 +158,10 @@ public class LibraryServiceAPI {
                 .toUriString();
 
         HttpEntity<Object> entity = new HttpEntity<>(createHttpHeadersWithToken());
-        ResponseEntity<Boolean> response = restTemplate.exchange(finalUrl, HttpMethod.PUT, entity, Boolean.class);
-        return response.getBody() != null && response.getBody();
+        ResponseEntity<Map<String, Object>> response = restTemplate.exchange(finalUrl, HttpMethod.PUT, entity, new ParameterizedTypeReference<Map<String, Object>>() {
+        });
+        Boolean success = (Boolean) response.getBody().get("success");
+        return success != null && success;
     }
 
     // Eliminar un juego de la biblioteca
@@ -167,7 +172,9 @@ public class LibraryServiceAPI {
                 .toUriString();
 
         HttpEntity<Object> entity = new HttpEntity<>(createHttpHeadersWithToken());
-        ResponseEntity<Boolean> response = restTemplate.exchange(finalUrl, HttpMethod.DELETE, entity, Boolean.class);
-        return response.getBody() != null && response.getBody();
+        ResponseEntity<Map<String, Object>> response = restTemplate.exchange(finalUrl, HttpMethod.DELETE, entity, new ParameterizedTypeReference<Map<String, Object>>() {
+        });
+        Boolean success = (Boolean) response.getBody().get("success");
+        return success != null && success;
     }
 }

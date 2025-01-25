@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class FriendshipServiceAPI {
@@ -39,19 +40,9 @@ public class FriendshipServiceAPI {
         return headers;
     }
 
-    // Obtener email del usuario autenticado a partir del token JWT
-    public String getEmailFromToken() {
-        return userServiceAPI.getEmailFromToken();  // Obtiene el email del token JWT
-    }
-
-    // Obtener el ID del usuario autenticado a partir de su token
-    public int getUserIdFromToken() {
-        return userServiceAPI.getUserIdFromToken(); // El backend devuelve el ID del usuario
-    }
-
     // Obtener lista de amigos del usuario por su ID
     public List<UserBase> getFriends() {
-        String url = BASE_URL + "/friends/" + getUserIdFromToken();
+        String url = BASE_URL + "/friends";
 
         HttpEntity<Object> entity = new HttpEntity<>(createHttpHeadersWithToken());
         ResponseEntity<List<UserBase>> response = restTemplate.exchange(url, HttpMethod.GET, entity,
@@ -65,17 +56,21 @@ public class FriendshipServiceAPI {
 
         HttpEntity<Object> entity = new HttpEntity<>(createHttpHeadersWithToken());
         ResponseEntity<List<Friendship>> response = restTemplate.exchange(url, HttpMethod.GET, entity,
-                new ParameterizedTypeReference<List<Friendship>>() {});
+                new ParameterizedTypeReference<List<Friendship>>() {
+                });
         return response.getBody();
     }
 
     // Enviar solicitud de amistad
-    public boolean sendFriendRequest(Friendship friendship) {
-        String url = BASE_URL + "/request";
+    public boolean sendFriendRequest(String friendEmail) {
+        String url = BASE_URL + "/request?friendEmail=" + friendEmail;
 
-        HttpEntity<Friendship> entity = new HttpEntity<>(friendship, createHttpHeadersWithToken());
-        ResponseEntity<Boolean> response = restTemplate.exchange(url, HttpMethod.POST, entity, Boolean.class);
-        return response.getBody() != null && response.getBody();
+        HttpEntity<Friendship> entity = new HttpEntity<>(createHttpHeadersWithToken());
+        ResponseEntity<Map<String, Object>> response = restTemplate.exchange(url, HttpMethod.POST, entity, new ParameterizedTypeReference<Map<String, Object>>() {
+        });
+        System.out.println(response.getBody());
+        Boolean success = (Boolean) response.getBody().get("success");
+        return success != null && success;
     }
 
     // Responder a una solicitud de amistad (Aceptar/Rechazar)
@@ -83,16 +78,19 @@ public class FriendshipServiceAPI {
         String url = BASE_URL + "/respond?status=" + status;
 
         HttpEntity<Friendship> entity = new HttpEntity<>(friendship, createHttpHeadersWithToken());
-        ResponseEntity<Boolean> response = restTemplate.exchange(url, HttpMethod.PUT, entity, Boolean.class);
-        return response.getBody() != null && response.getBody();
+        ResponseEntity<Map<String, Object>> response = restTemplate.exchange(url, HttpMethod.PUT, entity, new ParameterizedTypeReference<Map<String, Object>>() {
+        });
+        Boolean success = (Boolean) response.getBody().get("success");
+        return success != null && success;
     }
 
     // Obtener el ID de un usuario por su email (si no se usa el token para obtenerlo directamente)
     public int getUserIdByEmail(String email) {
-        String url = BASE_URL + "/friend-id?friendEmail={email}";
+        String url = BASE_URL + "/friend-id?friendEmail=" + email;
 
         HttpEntity<Object> entity = new HttpEntity<>(createHttpHeadersWithToken());
-        return restTemplate.exchange(url, HttpMethod.GET, entity, Integer.class, email).getBody();
+        ResponseEntity<Integer> response = restTemplate.exchange(url, HttpMethod.GET, entity, Integer.class);
+        return response.getBody() != null ? response.getBody() : -1;
     }
 
     // Eliminar a un amigo
@@ -100,8 +98,9 @@ public class FriendshipServiceAPI {
         String url = BASE_URL + "/delete?friendId=" + friendId;
 
         HttpEntity<Object> entity = new HttpEntity<>(createHttpHeadersWithToken());
-        ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.DELETE, entity, String.class);
-        return response.getStatusCode().is2xxSuccessful();
+        ResponseEntity<Map<String, Object>> response = restTemplate.exchange(url, HttpMethod.DELETE, entity, new ParameterizedTypeReference<Map<String, Object>>() {
+        });
+        Boolean success = (Boolean) response.getBody().get("success");
+        return success != null && success;
     }
-
 }

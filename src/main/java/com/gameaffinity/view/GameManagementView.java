@@ -2,6 +2,8 @@ package com.gameaffinity.view;
 
 import com.gameaffinity.controller.GameManagementController;
 import com.gameaffinity.model.Game;
+import com.gameaffinity.util.SpringFXMLLoader;
+import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -10,9 +12,13 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
+@Component
 public class GameManagementView {
 
     @FXML
@@ -31,11 +37,14 @@ public class GameManagementView {
     private Button deleteGameButton;
 
     @Autowired
+    private SpringFXMLLoader springFXMLLoader;
+    @Autowired
     private GameManagementController gameManagementController;
 
     @FXML
     public void initialize() {
         // Initialize table columns
+        refreshGameTable();
         nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
         genreColumn.setCellValueFactory(new PropertyValueFactory<>("genre"));
         priceColumn.setCellValueFactory(new PropertyValueFactory<>("price"));
@@ -44,6 +53,7 @@ public class GameManagementView {
             openGameFormDialog();
             refreshGameTable();
         });
+        refreshGameTable();
 
         deleteGameButton.setOnAction(event -> {
             deleteGame(gameTable.getSelectionModel().getSelectedItem());
@@ -56,13 +66,16 @@ public class GameManagementView {
     }
 
     public void refreshGameTable() {
-        gameTable.getItems().clear();
-        gameTable.getItems().addAll(gameManagementController.getAllGames());
+        List<Game> games = gameManagementController.getAllGames();
+        if (games == null) {
+            games = new ArrayList<>();
+        }
+        gameTable.setItems(FXCollections.observableArrayList(games));
     }
 
     public void openGameFormDialog() {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/dialogs/game_form_dialog.fxml"));
+            FXMLLoader loader = springFXMLLoader.loadFXML("/fxml/dialogs/game_form_dialog.fxml");
             Parent root = loader.load();
 
             Stage stage = new Stage();
@@ -91,13 +104,14 @@ public class GameManagementView {
         }
     }
 
-    public void back(){
-        try{
+    public void back() {
+        try {
             Stage currentStage = (Stage) backButton.getScene().getWindow();
-            Parent adminDashboard = FXMLLoader.load(getClass().getResource("/fxml/admin/admin_dashboard.fxml"));
+            FXMLLoader loader = springFXMLLoader.loadFXML("/fxml/admin/admin_dashboard.fxml");
+            Parent adminDashboard = loader.load();
             Scene adminScene = new Scene(adminDashboard);
             currentStage.setScene(adminScene);
-        }catch(Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

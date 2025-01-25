@@ -1,8 +1,10 @@
 package com.gameaffinity.view;
 
+import com.gameaffinity.controller.GameManagementController;
 import com.gameaffinity.controller.LibraryController;
 import com.gameaffinity.model.Game;
 import com.gameaffinity.model.UserBase;
+import com.gameaffinity.util.SpringFXMLLoader;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -14,9 +16,12 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.List;
 
+@Component
 public class GameDatabaseView {
 
     @FXML
@@ -43,7 +48,11 @@ public class GameDatabaseView {
     private Button backButton;
 
     @Autowired
+    private SpringFXMLLoader springFXMLLoader;
+    @Autowired
     private LibraryController libraryController;
+    @Autowired
+    private GameManagementController gameManagementController;
 
     public void initialize() {
         databaseTable.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
@@ -93,22 +102,34 @@ public class GameDatabaseView {
     }
 
     private void refreshGameDatabase() {
-        List<Game> games = libraryController.getAllGames();
+        List<Game> games = gameManagementController.getAllGames();
+        if (games == null) {
+            games = new ArrayList<>();
+        }
         databaseTable.setItems(FXCollections.observableArrayList(games));
     }
 
     private void refreshGameDatabaseByName(String keyword) {
         List<Game> games = libraryController.getGamesByNameUser(keyword);
+        if (games == null) {
+            games = new ArrayList<>();
+        }
         databaseTable.setItems(FXCollections.observableArrayList(games));
     }
 
     private void refreshGameDatabaseByGenre(String genre) {
         List<Game> games = libraryController.getGamesByGenreUser(genre);
+        if (games == null) {
+            games = new ArrayList<>();
+        }
         databaseTable.setItems(FXCollections.observableArrayList(games));
     }
 
     private void refreshGameDatabaseByGenreAndName(String genre, String name) {
         List<Game> games = libraryController.getGamesByGenreAndNameUser(genre, name);
+        if (games == null) {
+            games = new ArrayList<>();
+        }
         databaseTable.setItems(FXCollections.observableArrayList(games));
     }
 
@@ -129,7 +150,7 @@ public class GameDatabaseView {
     private void back() {
         try {
             Stage currentStage = (Stage) databaseTable.getScene().getWindow();
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/user/user_dashboard.fxml"));
+            FXMLLoader loader = springFXMLLoader.loadFXML("/fxml/user/user_dashboard.fxml");
             Parent userDashboard = loader.load();
 
             Scene userScene = new Scene(userDashboard);

@@ -41,10 +41,6 @@ public class LibraryController {
         return libraryServiceAPI.getGamesByGenreAndNameUser(genre, name);
     }
 
-    public List<Game> getAllGames() {
-        return libraryServiceAPI.getAllGames();
-    }
-
     public boolean addGameToLibrary(String name) {
         return libraryServiceAPI.addGameToLibrary(name);
     }

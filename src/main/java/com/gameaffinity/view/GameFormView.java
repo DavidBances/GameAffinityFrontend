@@ -7,7 +7,9 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
+@Component
 public class GameFormView {
 
     @FXML
@@ -39,6 +41,7 @@ public class GameFormView {
     }
 
     public void saveGame(String name, String genre, String priceText) {
+        System.out.println("Hola");
         try {
             if (gameManagementController.addGame(name, genre, priceText)) {
                 showAlert("Game added successfully!", "Success", Alert.AlertType.INFORMATION);
