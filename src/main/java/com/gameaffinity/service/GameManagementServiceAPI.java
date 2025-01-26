@@ -45,7 +45,6 @@ public class GameManagementServiceAPI {
 
     // Agregar un juego
     public boolean addGame(String name, String genre, String priceText) {
-        System.out.println("Hola");
         String url = BASE_URL + "/add";
 
         // Construir la URL con los parámetros de consulta
@@ -80,6 +79,39 @@ public class GameManagementServiceAPI {
                 new ParameterizedTypeReference<List<Game>>() {
                 }
         );
+        return response.getBody();
+    }
+
+    // Obtener juegos del usuario por género
+    public List<Game> getGamesByGenre(String genre) {
+        String url = BASE_URL + "/genre?genre={genre}";
+
+        HttpEntity<Object> entity = new HttpEntity<>(createHttpHeadersWithToken());
+        ResponseEntity<List<Game>> response = restTemplate.exchange(url, HttpMethod.GET, entity,
+                new ParameterizedTypeReference<List<Game>>() {
+                }, genre);
+        return response.getBody();
+    }
+
+    // Obtener juegos del usuario por nombre
+    public List<Game> getGamesByName(String name) {
+        String url = BASE_URL + "/name?name={name}";
+
+        HttpEntity<Object> entity = new HttpEntity<>(createHttpHeadersWithToken());
+        ResponseEntity<List<Game>> response = restTemplate.exchange(url, HttpMethod.GET, entity,
+                new ParameterizedTypeReference<List<Game>>() {
+                }, name);
+        return response.getBody();
+    }
+
+    // Obtener juegos del usuario por género y nombre
+    public List<Game> getGamesByGenreAndName(String genre, String name) {
+        String url = BASE_URL + "/genre-and-name?genre={genre}&name={name}";
+
+        HttpEntity<Object> entity = new HttpEntity<>(createHttpHeadersWithToken());
+        ResponseEntity<List<Game>> response = restTemplate.exchange(url, HttpMethod.GET, entity,
+                new ParameterizedTypeReference<List<Game>>() {
+                }, genre, name);
         return response.getBody();
     }
 

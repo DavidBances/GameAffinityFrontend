@@ -68,7 +68,6 @@ public class FriendshipServiceAPI {
         HttpEntity<Friendship> entity = new HttpEntity<>(createHttpHeadersWithToken());
         ResponseEntity<Map<String, Object>> response = restTemplate.exchange(url, HttpMethod.POST, entity, new ParameterizedTypeReference<Map<String, Object>>() {
         });
-        System.out.println(response.getBody());
         Boolean success = (Boolean) response.getBody().get("success");
         return success != null && success;
     }
@@ -82,15 +81,6 @@ public class FriendshipServiceAPI {
         });
         Boolean success = (Boolean) response.getBody().get("success");
         return success != null && success;
-    }
-
-    // Obtener el ID de un usuario por su email (si no se usa el token para obtenerlo directamente)
-    public int getUserIdByEmail(String email) {
-        String url = BASE_URL + "/friend-id?friendEmail=" + email;
-
-        HttpEntity<Object> entity = new HttpEntity<>(createHttpHeadersWithToken());
-        ResponseEntity<Integer> response = restTemplate.exchange(url, HttpMethod.GET, entity, Integer.class);
-        return response.getBody() != null ? response.getBody() : -1;
     }
 
     // Eliminar a un amigo

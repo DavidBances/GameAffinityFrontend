@@ -16,6 +16,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.FlowPane;
 import javafx.stage.Stage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -26,6 +27,17 @@ import java.util.List;
 @Component
 public class GameDatabaseView {
 
+    @Autowired
+    private SpringFXMLLoader springFXMLLoader;
+    @Autowired
+    private GameManagementController gameManagementController;
+    @Autowired
+    private LibraryController libraryController;
+
+    @FXML
+    private FlowPane imageContainer;
+    @FXML
+    private Button backButton;
     @FXML
     private TextField searchField;
     @FXML
@@ -34,41 +46,22 @@ public class GameDatabaseView {
     private ComboBox<String> genreComboBox;
     @FXML
     private Button filterButton;
-    @FXML
-    private TableView<Game> databaseTable;
-    @FXML
-    private ImageView gameImage;
-    @FXML
-    private TableColumn<Game, String> nameColumn;
-    @FXML
-    private TableColumn<Game, String> genreColumn;
-    @FXML
-    private TableColumn<Game, Double> priceColumn;
-    @FXML
-    private TableColumn<Game, Integer> scoreColumn;
-    @FXML
-    private Button addGameButton;
-    @FXML
-    private Button backButton;
 
-    @Autowired
-    private SpringFXMLLoader springFXMLLoader;
-    @Autowired
-    private LibraryController libraryController;
-    @Autowired
-    private GameManagementController gameManagementController;
-
+    @FXML
     public void initialize() {
-        databaseTable.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
-        configureTableColumns();
+        loadGameImages(gameManagementController.getAllGames());
         loadGenres();
 
-        searchButton.setOnAction(e -> refreshGameDatabaseByName(searchField.getText().trim()));
+        searchButton.setOnAction(e -> {
+            refreshGameDatabaseByName(searchField.getText().trim());
+        });
         filterButton.setOnAction(e -> {
             String selectedGenre = genreComboBox.getValue();
             String search = searchField.getText().trim();
-            if ("All".equalsIgnoreCase(selectedGenre)) {
+            if ("All".equalsIgnoreCase(selectedGenre) && searchField.getText().trim().isEmpty()) {
                 refreshGameDatabase();
+            } else if ("All".equalsIgnoreCase(selectedGenre) && !searchField.getText().trim().isEmpty()) {
+                refreshGameDatabaseByName(search);
             } else if (!searchField.getText().trim().isEmpty()) {
                 refreshGameDatabaseByGenreAndName(selectedGenre, search);
             } else {
@@ -76,15 +69,24 @@ public class GameDatabaseView {
             }
         });
 
-        addGameButton.setOnAction(e -> {
-            addGame();
-            refreshGameDatabase();
-        });
-        backButton.setOnAction(e -> {
-            back();
-            refreshGameDatabase();
-        });
+        backButton.setOnAction(event -> back());
     }
+
+    private void loadGameImages(List<Game> games) {
+        imageContainer.getChildren().clear();
+        for (Game game : games) {
+            ImageView imageView = new ImageView(new Image(game.getImageUrl(), true));
+            imageView.setPreserveRatio(true);
+            imageView.setFitWidth(300);
+            imageView.setFitHeight(300);
+
+            // Activar suavizado para mejorar la calidad visual
+            imageView.setSmooth(true);
+
+            imageContainer.getChildren().add(imageView);
+        }
+    }
+
 
     private void loadGenres() {
         genreComboBox.getItems().clear();
@@ -94,16 +96,16 @@ public class GameDatabaseView {
     }
 
 
-    private void configureTableColumns() {
-        nameColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getName()));
-        genreColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getGenre()));
-        priceColumn
-                .setCellValueFactory(cellData -> new SimpleDoubleProperty(cellData.getValue().getPrice()).asObject());
-        scoreColumn.setCellValueFactory(cellData ->
-                new SimpleIntegerProperty(libraryController.getGameScore(cellData.getValue().getId())).asObject()
-        );
-        refreshGameDatabase();
-    }
+//    private void configureTableColumns() {
+//        nameColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getName()));
+//        genreColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getGenre()));
+//        priceColumn
+//                .setCellValueFactory(cellData -> new SimpleDoubleProperty(cellData.getValue().getPrice()).asObject());
+//        scoreColumn.setCellValueFactory(cellData ->
+//                new SimpleIntegerProperty(libraryController.getGameScore(cellData.getValue().getId())).asObject()
+//        );
+//        refreshGameDatabase();
+//    }
 
     private void refreshGameDatabase() {
         List<Game> games = gameManagementController.getAllGames();
@@ -111,52 +113,51 @@ public class GameDatabaseView {
         if (games == null) {
             games = new ArrayList<>();
         }
-        gameImage = new ImageView();
-        gameImage.setImage(new Image(games.getFirst().getImageUrl()));
-        databaseTable.setItems(FXCollections.observableArrayList(games));
+        loadGameImages(games);
     }
 
     private void refreshGameDatabaseByName(String keyword) {
-        List<Game> games = libraryController.getGamesByNameUser(keyword);
+        List<Game> games = gameManagementController.getGamesByName(keyword);
+        System.out.println("Texto en el campo de búsqueda: " + keyword);  // Depuración
         if (games == null) {
             games = new ArrayList<>();
         }
-        databaseTable.setItems(FXCollections.observableArrayList(games));
+        loadGameImages(games);
     }
 
     private void refreshGameDatabaseByGenre(String genre) {
-        List<Game> games = libraryController.getGamesByGenreUser(genre);
+        List<Game> games = gameManagementController.getGamesByGenre(genre);
         if (games == null) {
             games = new ArrayList<>();
         }
-        databaseTable.setItems(FXCollections.observableArrayList(games));
+        loadGameImages(games);
     }
 
     private void refreshGameDatabaseByGenreAndName(String genre, String name) {
-        List<Game> games = libraryController.getGamesByGenreAndNameUser(genre, name);
+        List<Game> games = gameManagementController.getGamesByGenreAndName(genre, name);
         if (games == null) {
             games = new ArrayList<>();
         }
-        databaseTable.setItems(FXCollections.observableArrayList(games));
+        loadGameImages(games);
     }
 
-    private void addGame() {
-        Game selectedGame = databaseTable.getSelectionModel().getSelectedItem();
-        if (selectedGame != null) {
-            try {
-                boolean success = libraryController.addGameToLibrary(selectedGame.getName());
-                showAlert(success ? "Game added to library!" : "Game already in library or not found.", success ? Alert.AlertType.INFORMATION : Alert.AlertType.ERROR);
-            } catch (Exception ex) {
-                showAlert(ex.getMessage(), Alert.AlertType.ERROR);
-            }
-        } else {
-            showAlert("Please select a game to add.", Alert.AlertType.WARNING);
-        }
-    }
+//    private void addGame() {
+//        Game selectedGame = databaseTable.getSelectionModel().getSelectedItem();
+//        if (selectedGame != null) {
+//            try {
+//                boolean success = libraryController.addGameToLibrary(selectedGame.getName());
+//                showAlert(success ? "Game added to library!" : "Game already in library or not found.", success ? Alert.AlertType.INFORMATION : Alert.AlertType.ERROR);
+//            } catch (Exception ex) {
+//                showAlert(ex.getMessage(), Alert.AlertType.ERROR);
+//            }
+//        } else {
+//            showAlert("Please select a game to add.", Alert.AlertType.WARNING);
+//        }
+//    }
 
     private void back() {
         try {
-            Stage currentStage = (Stage) databaseTable.getScene().getWindow();
+            Stage currentStage = (Stage) imageContainer.getScene().getWindow();
             FXMLLoader loader = springFXMLLoader.loadFXML("/fxml/user/user_dashboard.fxml");
             Parent userDashboard = loader.load();
 
