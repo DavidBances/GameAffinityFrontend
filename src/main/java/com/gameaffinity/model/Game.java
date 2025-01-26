@@ -10,6 +10,7 @@ public class Game {
     private final double price;
     private String state;
     private int score;
+    private String imageUrl;
 
     /**
      * Constructor for the Game class.
@@ -27,13 +28,15 @@ public class Game {
                 @JsonProperty("genre") String genre,
                 @JsonProperty("price") double price,
                 @JsonProperty("state") String state,
-                @JsonProperty("score") int score) {
+                @JsonProperty("score") int score,
+                @JsonProperty("imageUrl") String imageUrl){
         this.id = id;
         this.name = name;
         this.genre = genre;
         this.price = price;
         this.state = state;
         this.score = score;
+        this.imageUrl = imageUrl;
     }
 
     /**
@@ -98,6 +101,13 @@ public class Game {
         this.score = score;
     }
 
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
     /**
      * Provides a string representation of the game.
      *
@@ -106,6 +116,6 @@ public class Game {
     @Override
     public String toString() {
         return "ID: " + id + ", Name: " + name + ", Genre: " + genre + ", Price: $" + price + ", State: " + state
-                + ", Score: " + score;
+                + ", Score: " + score + ", ImageUrl: " + imageUrl;
     }
 }

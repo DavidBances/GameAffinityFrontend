@@ -14,6 +14,8 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -34,6 +36,8 @@ public class GameDatabaseView {
     private Button filterButton;
     @FXML
     private TableView<Game> databaseTable;
+    @FXML
+    private ImageView gameImage;
     @FXML
     private TableColumn<Game, String> nameColumn;
     @FXML
@@ -103,9 +107,12 @@ public class GameDatabaseView {
 
     private void refreshGameDatabase() {
         List<Game> games = gameManagementController.getAllGames();
+        System.out.println(games);
         if (games == null) {
             games = new ArrayList<>();
         }
+        gameImage = new ImageView();
+        gameImage.setImage(new Image(games.getFirst().getImageUrl()));
         databaseTable.setItems(FXCollections.observableArrayList(games));
     }
 
