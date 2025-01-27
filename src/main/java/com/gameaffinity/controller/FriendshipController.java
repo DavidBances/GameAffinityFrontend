@@ -30,7 +30,7 @@ public class FriendshipController {
         return friendshipServiceAPI.respondToFriendRequest(friendship, accepted); // Llama al ApiService para responder a una solicitud
     }
 
-    public boolean sendFriendRequest(String friendEmail) {
+    public String sendFriendRequest(String friendEmail) {
         return friendshipServiceAPI.sendFriendRequest(friendEmail); // Llama al ApiService para enviar una solicitud de amistad
     }
 

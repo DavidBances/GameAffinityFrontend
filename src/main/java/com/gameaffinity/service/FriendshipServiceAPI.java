@@ -1,5 +1,8 @@
 package com.gameaffinity.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gameaffinity.model.Friendship;
 import com.gameaffinity.model.UserBase;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +13,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
@@ -61,16 +65,28 @@ public class FriendshipServiceAPI {
         return response.getBody();
     }
 
-    // Enviar solicitud de amistad
-    public boolean sendFriendRequest(String friendEmail) {
-        String url = BASE_URL + "/request?friendEmail=" + friendEmail;
-
-        HttpEntity<Friendship> entity = new HttpEntity<>(createHttpHeadersWithToken());
-        ResponseEntity<Map<String, Object>> response = restTemplate.exchange(url, HttpMethod.POST, entity, new ParameterizedTypeReference<Map<String, Object>>() {
-        });
-        Boolean success = (Boolean) response.getBody().get("success");
-        return success != null && success;
+    public String sendFriendRequest(String friendEmail) {
+        try {
+            ResponseEntity<Map<String, Object>> response = restTemplate.exchange(
+                    BASE_URL + "/request?friendEmail=" + friendEmail,
+                    HttpMethod.POST,
+                    new HttpEntity<>(createHttpHeadersWithToken()),
+                    new ParameterizedTypeReference<Map<String, Object>>() {
+                    }
+            );
+            return (String) response.getBody().get("message");
+        } catch (HttpClientErrorException.BadRequest e) {
+            Map<String, Object> errorResponse = null;
+            try {
+                errorResponse = new ObjectMapper().readValue(e.getResponseBodyAsString(), new TypeReference<>() {
+                });
+            } catch (JsonProcessingException ex) {
+                ex.printStackTrace();
+            }
+            return (String) errorResponse.get("message");
+        }
     }
+
 
     // Responder a una solicitud de amistad (Aceptar/Rechazar)
     public boolean respondToFriendRequest(Friendship friendship, String status) {

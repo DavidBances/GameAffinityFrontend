@@ -75,9 +75,12 @@ public class GameDatabaseView {
     private void loadGameImages(List<Game> games) {
         imageContainer.getChildren().clear();
         for (Game game : games) {
+            if (game.getImageUrl() == null) {
+                continue;
+            }
             ImageView imageView = new ImageView(new Image(game.getImageUrl(), true));
-            imageView.setPreserveRatio(true);
-            imageView.setFitWidth(300);
+            imageView.setPreserveRatio(false);
+            imageView.setFitWidth(200);
             imageView.setFitHeight(300);
 
             // Activar suavizado para mejorar la calidad visual

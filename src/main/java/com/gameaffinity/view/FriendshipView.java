@@ -140,8 +140,8 @@ public class FriendshipView {
 
     private void sendFriendRequest() {
         String receiverEmail = showInputDialog("Enter the User email of the person you want to add:");
-        boolean success = friendshipController.sendFriendRequest(receiverEmail);
-        showAlert(success ? "Friend request sent!" : "Failed to send friend request.", "", success ? Alert.AlertType.INFORMATION : Alert.AlertType.ERROR);
+        String success = friendshipController.sendFriendRequest(receiverEmail);
+        showAlert(success, "", Alert.AlertType.INFORMATION);
     }
 
     private void viewFriendLibrary() {
