@@ -1,0 +1,25 @@
+.image-container {
+    -fx-padding: 10; /* Espaciado interno del contenedor */
+    -fx-alignment: center; /* Centrado del contenido */
+}
+
+.addButton {
+    -fx-text-fill: white;
+    -fx-border-radius: 5px;
+    -fx-padding: 5 10;
+    -fx-opacity: 0; /* Oculto por defecto */
+    -fx-cursor: hand;
+    -fx-transition: opacity 0.3s ease;
+}
+
+.image-container:hover .addButton{
+    -fx-opacity: 1; /* Mostrar el botón al pasar el ratón */
+}
+
+.added {
+    -fx-background-color: green;
+}
+
+.not-added {
+    -fx-background-color: rgba(0, 0, 0, 0.7);
+}

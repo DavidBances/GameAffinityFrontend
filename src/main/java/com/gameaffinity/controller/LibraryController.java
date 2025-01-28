@@ -21,7 +21,7 @@ public class LibraryController {
         return libraryServiceAPI.getAllGenres();
     }
 
-    public List<Game> getGamesByUserId() {
+    public List<Game> getAllGamesByUser() {
         return libraryServiceAPI.getAllGamesByUser();
     }
 
@@ -57,7 +57,7 @@ public class LibraryController {
         return libraryServiceAPI.getGameScore(gameId);
     }
 
-    public boolean removeGameFromLibrary(int gameId) {
-        return libraryServiceAPI.removeGameFromLibrary(gameId);
+    public boolean removeGameFromLibrary(String gameName) {
+        return libraryServiceAPI.removeGameFromLibrary(gameName);
     }
 }

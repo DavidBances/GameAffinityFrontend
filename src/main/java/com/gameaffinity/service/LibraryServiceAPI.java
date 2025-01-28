@@ -7,6 +7,8 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,7 +65,6 @@ public class LibraryServiceAPI {
         ResponseEntity<List<Game>> response = restTemplate.exchange(url, HttpMethod.GET, entity,
                 new ParameterizedTypeReference<List<Game>>() {
                 });
-        System.out.println(response.getBody());
         return response.getBody();
     }
 
@@ -126,10 +127,16 @@ public class LibraryServiceAPI {
         String finalUrl = UriComponentsBuilder.fromHttpUrl(url)
                 .queryParam("gameName", gameName)
                 .toUriString();
+        System.out.println(finalUrl);
 
         HttpEntity<Object> entity = new HttpEntity<>(createHttpHeadersWithToken());
-        ResponseEntity<Map<String, Object>> response = restTemplate.exchange(finalUrl, HttpMethod.POST, entity, new ParameterizedTypeReference<Map<String, Object>>() {
-        });
+        ResponseEntity<Map<String, Object>> response = null;
+        try {
+            response = restTemplate.exchange(finalUrl, HttpMethod.POST, entity, new ParameterizedTypeReference<Map<String, Object>>() {
+            });
+        } catch (HttpClientErrorException e) {
+            return false;
+        }
         Boolean success = (Boolean) response.getBody().get("success");
         return success != null && success;
     }
@@ -165,10 +172,10 @@ public class LibraryServiceAPI {
     }
 
     // Eliminar un juego de la biblioteca
-    public boolean removeGameFromLibrary(int gameId) {
+    public boolean removeGameFromLibrary(String gameName) {
         String url = BASE_URL + "/remove";
         String finalUrl = UriComponentsBuilder.fromHttpUrl(url)
-                .queryParam("gameId", gameId)
+                .queryParam("gameName", gameName)
                 .toUriString();
 
         HttpEntity<Object> entity = new HttpEntity<>(createHttpHeadersWithToken());

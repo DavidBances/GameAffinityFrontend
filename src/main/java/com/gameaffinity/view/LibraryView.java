@@ -2,21 +2,16 @@ package com.gameaffinity.view;
 
 import com.gameaffinity.controller.LibraryController;
 import com.gameaffinity.model.Game;
-import com.gameaffinity.model.UserBase;
 import com.gameaffinity.util.SpringFXMLLoader;
-import javafx.beans.property.SimpleDoubleProperty;
-import javafx.beans.property.SimpleIntegerProperty;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.control.cell.ComboBoxTableCell;
-import javafx.scene.control.cell.TextFieldTableCell;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.FlowPane;
 import javafx.stage.Stage;
-import javafx.util.converter.IntegerStringConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -27,31 +22,15 @@ import java.util.List;
 public class LibraryView {
 
     @FXML
-    private TextField searchField;
+    private FlowPane imageContainer;
     @FXML
-    private Button searchButton;
+    private Button backButton;
+    @FXML
+    private TextField searchField;
     @FXML
     private ComboBox<String> genreComboBox;
     @FXML
     private Button filterButton;
-    @FXML
-    private TableView<Game> gamesTable;
-    @FXML
-    private TableColumn<Game, String> nameColumn;
-    @FXML
-    private TableColumn<Game, String> genreColumn;
-    @FXML
-    private TableColumn<Game, Double> priceColumn;
-    @FXML
-    private TableColumn<Game, String> stateColumn;
-    @FXML
-    private TableColumn<Game, Integer> scoreColumn;
-    @FXML
-    private Button addGameButton;
-    @FXML
-    private Button removeGameButton;
-    @FXML
-    private Button backButton;
 
     @Autowired
     private SpringFXMLLoader springFXMLLoader;
@@ -59,17 +38,17 @@ public class LibraryView {
     private LibraryController libraryController;
 
     public void initialize() {
-        gamesTable.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
+        loadGameImages(libraryController.getAllGamesByUser());
         refreshGamesList();
-        configureTableColumns();
         loadGenres();
 
-        searchButton.setOnAction(e -> refreshGamesListByName(searchField.getText().trim()));
         filterButton.setOnAction(e -> {
             String selectedGenre = genreComboBox.getValue();
             String search = searchField.getText().trim();
-            if ("All".equalsIgnoreCase(selectedGenre)) {
+            if ("All".equalsIgnoreCase(selectedGenre) && searchField.getText().trim().isEmpty()) {
                 refreshGamesList();
+            } else if ("All".equalsIgnoreCase(selectedGenre) && !searchField.getText().trim().isEmpty()) {
+                refreshGamesListByName(search);
             } else if (!searchField.getText().trim().isEmpty()) {
                 refreshGamesListByGenreAndName(selectedGenre, search);
             } else {
@@ -77,51 +56,28 @@ public class LibraryView {
             }
         });
 
-        stateColumn.setOnEditCommit(event -> {
-            Game game = event.getRowValue();
-            String newState = event.getNewValue();
-            updateGameState(game, newState);
-        });
-
-        scoreColumn.setOnEditCommit(event -> {
-            Game game = event.getRowValue();
-            Integer newScore = event.getNewValue();
-            System.out.println("Nuevo puntaje: " + newScore);
-            updateGameScore(game, newScore);
-        });
-
-        addGameButton.setOnAction(e -> {
-            addGame();
-            refreshGamesList();
-        });
-        removeGameButton.setOnAction(e -> {
-            removeGame();
-            refreshGamesList();
-        });
-        backButton.setOnAction(e -> {
-            back();
-            refreshGamesList();
-        });
+        backButton.setOnAction(event -> back());
     }
 
-    private void configureTableColumns() {
-        // Set up the table columns
-        nameColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getName()));
-        genreColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getGenre()));
-        priceColumn
-                .setCellValueFactory(cellData -> new SimpleDoubleProperty(cellData.getValue().getPrice()).asObject());
+    private void loadGameImages(List<Game> games) {
+        imageContainer.getChildren().clear();
+        if (games == null) {
+            return;
+        }
+        for (Game game : games) {
+            if (game.getImageUrl() == null) {
+                continue;
+            }
+            ImageView imageView = new ImageView(new Image(game.getImageUrl(), true));
+            imageView.setPreserveRatio(false);
+            imageView.setFitWidth(200);
+            imageView.setFitHeight(300);
 
-        // Configuración para la columna de estado con ComboBoxTableCell
-        stateColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getState()));
-        stateColumn.setCellFactory(column -> {
-            ComboBoxTableCell<Game, String> cell = new ComboBoxTableCell<>();
-            cell.getItems().addAll("Available", "Playing", "Paused", "Completed", "Dropped", "Wishlist", "Replaying");
-            return cell;
-        });
+            // Activar suavizado para mejorar la calidad visual
+            imageView.setSmooth(true);
 
-        // Configuración para la columna de puntuación editable
-        scoreColumn.setCellValueFactory(cellData -> new SimpleIntegerProperty(cellData.getValue().getScore()).asObject());
-        scoreColumn.setCellFactory(TextFieldTableCell.forTableColumn(new IntegerStringConverter()));
+            imageContainer.getChildren().add(imageView);
+        }
     }
 
     private void loadGenres() {
@@ -132,11 +88,11 @@ public class LibraryView {
     }
 
     private void refreshGamesList() {
-        List<Game> games = libraryController.getGamesByUserId();
+        List<Game> games = libraryController.getAllGamesByUser();
         if (games == null) {
             games = new ArrayList<>();
         }
-        gamesTable.setItems(FXCollections.observableArrayList(games));
+        loadGameImages(games);
     }
 
     private void refreshGamesListByName(String name) {
@@ -144,7 +100,7 @@ public class LibraryView {
         if (games == null) {
             games = new ArrayList<>();
         }
-        gamesTable.setItems(FXCollections.observableArrayList(games));
+        loadGameImages(games);
     }
 
     private void refreshGamesListByGenre(String genre) {
@@ -152,7 +108,7 @@ public class LibraryView {
         if (games == null) {
             games = new ArrayList<>();
         }
-        gamesTable.setItems(FXCollections.observableArrayList(games));
+        loadGameImages(games);
     }
 
     private void refreshGamesListByGenreAndName(String genre, String name) {
@@ -160,7 +116,7 @@ public class LibraryView {
         if (games == null) {
             games = new ArrayList<>();
         }
-        gamesTable.setItems(FXCollections.observableArrayList(games));
+        loadGameImages(games);
     }
 
     public void updateGameScore(Game game, Integer newScore) {
@@ -193,24 +149,24 @@ public class LibraryView {
         }
     }
 
-    private void removeGame() {
-        Game selectedGame = gamesTable.getSelectionModel().getSelectedItem();
-        if (selectedGame != null) {
-            try {
-                boolean success = libraryController.removeGameFromLibrary(selectedGame.getId());
-                showAlert(success ? "Game removed successfully!" : "Failed to remove game.", Alert.AlertType.INFORMATION);
-                refreshGamesList();
-            } catch (Exception ex) {
-                showAlert("Error removing game: " + ex.getMessage(), Alert.AlertType.ERROR);
-            }
-        } else {
-            showAlert("No game selected.", Alert.AlertType.WARNING);
-        }
-    }
+//    private void removeGame() {
+//        Game selectedGame = gamesTable.getSelectionModel().getSelectedItem();
+//        if (selectedGame != null) {
+//            try {
+//                boolean success = libraryController.removeGameFromLibrary(selectedGame.getId());
+//                showAlert(success ? "Game removed successfully!" : "Failed to remove game.", Alert.AlertType.INFORMATION);
+//                refreshGamesList();
+//            } catch (Exception ex) {
+//                showAlert("Error removing game: " + ex.getMessage(), Alert.AlertType.ERROR);
+//            }
+//        } else {
+//            showAlert("No game selected.", Alert.AlertType.WARNING);
+//        }
+//    }
 
     private void back() {
         try {
-            Stage currentStage = (Stage) gamesTable.getScene().getWindow();
+            Stage currentStage = (Stage) imageContainer.getScene().getWindow();
             FXMLLoader loader = springFXMLLoader.loadFXML("/fxml/user/user_dashboard.fxml");
             Parent userDashboard = loader.load();
 
