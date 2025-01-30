@@ -213,22 +213,7 @@ public class GameDatabaseView {
             }
         }
     }
-
-
-//    private void addGame() {
-//        Game selectedGame = databaseTable.getSelectionModel().getSelectedItem();
-//        if (selectedGame != null) {
-//            try {
-//                boolean success = libraryController.addGameToLibrary(selectedGame.getName());
-//                showAlert(success ? "Game added to library!" : "Game already in library or not found.", success ? Alert.AlertType.INFORMATION : Alert.AlertType.ERROR);
-//            } catch (Exception ex) {
-//                showAlert(ex.getMessage(), Alert.AlertType.ERROR);
-//            }
-//        } else {
-//            showAlert("Please select a game to add.", Alert.AlertType.WARNING);
-//        }
-//    }
-
+    
     private void back() {
         try {
             Stage currentStage = (Stage) imageContainer.getScene().getWindow();
