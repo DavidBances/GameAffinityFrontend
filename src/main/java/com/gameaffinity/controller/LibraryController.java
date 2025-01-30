@@ -53,8 +53,8 @@ public class LibraryController {
         return libraryServiceAPI.updateGameScore(gameId, newScore);
     }
 
-    public int getGameScore(int gameId) {
-        return libraryServiceAPI.getGameScore(gameId);
+    public int getMeanGameScore(int gameId) {
+        return libraryServiceAPI.getMeanGameScore(gameId);
     }
 
     public boolean removeGameFromLibrary(String gameName) {

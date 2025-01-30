@@ -5,12 +5,15 @@ import com.gameaffinity.model.Game;
 import com.gameaffinity.util.SpringFXMLLoader;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.FlowPane;
+import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -76,9 +79,58 @@ public class LibraryView {
             // Activar suavizado para mejorar la calidad visual
             imageView.setSmooth(true);
 
-            imageContainer.getChildren().add(imageView);
+            // Crear botón superpuesto
+            Button removeButton = new Button("❌");
+            removeButton.getStyleClass().add("removeButton");
+            removeButton.setUserData(game.getName()); // Asocia el nombre del juego al botón
+            removeButton.setOnAction(e -> removeGame((String) removeButton.getUserData(), removeButton));
+
+            // Label del score (ahora editable)
+            Label scoreLabel = new Label(game.getScore() + "");
+            scoreLabel.getStyleClass().add("number-box");
+            StackPane.setAlignment(scoreLabel, Pos.BOTTOM_RIGHT);
+            StackPane.setMargin(scoreLabel, new Insets(0, 5, 5, 0));
+
+            // Hacer que el score sea editable
+            scoreLabel.setOnMouseClicked(event -> {
+                String newScoreStr = showInputDialog("Enter new score (0-10):");
+                try {
+                    int newScore = Integer.parseInt(newScoreStr);
+                    updateGameScore(game, newScore);
+                } catch (NumberFormatException e) {
+                    showAlert("Invalid input. Please enter a number between 0 and 10.", Alert.AlertType.WARNING);
+                }
+            });
+
+            // Botón de información en la esquina superior izquierda
+            Button infoButton = new Button("ℹ");
+            infoButton.getStyleClass().add("info-button");
+            StackPane.setAlignment(infoButton, Pos.BOTTOM_LEFT);
+            StackPane.setMargin(infoButton, new Insets(0, 0, 5, 5));
+
+            // Acción del botón de información
+            infoButton.setOnAction(e -> showAlert("Game Info:\nName: " + game.getName() + "\nGenre: " + game.getGenre(), Alert.AlertType.INFORMATION));
+
+            // Menú desplegable para el estado del juego
+            ComboBox<String> statusDropdown = new ComboBox<>();
+            statusDropdown.getItems().addAll("Jugando", "Completado", "Pendiente");
+            statusDropdown.setValue(game.getState()); // Usar el estado actual del juego
+            statusDropdown.getStyleClass().add("status-dropdown");
+            StackPane.setAlignment(statusDropdown, Pos.TOP_CENTER);
+            StackPane.setMargin(statusDropdown, new Insets(5, 0, 0, 0));
+
+            // Llamar a updateGameState() cuando el usuario cambie el estado
+            statusDropdown.setOnAction(e -> updateGameState(game, statusDropdown.getValue()));
+
+            // StackPane para contener todos los elementos
+            StackPane stackPane = new StackPane();
+            stackPane.getStyleClass().add("image-container");
+            stackPane.getChildren().addAll(imageView, removeButton, scoreLabel, infoButton, statusDropdown);
+
+            imageContainer.getChildren().add(stackPane);
         }
     }
+
 
     private void loadGenres() {
         genreComboBox.getItems().clear();
@@ -135,34 +187,14 @@ public class LibraryView {
         refreshGamesList();
     }
 
-
-    private void addGame() {
-        String gameName = showInputDialog("Enter Game Name to Add:");
-        if (gameName != null && !gameName.isEmpty()) {
-            try {
-                boolean success = libraryController.addGameToLibrary(gameName);
-                showAlert(success ? "Game added successfully!" : "Failed to add game.", Alert.AlertType.INFORMATION);
-                refreshGamesList();
-            } catch (Exception ex) {
-                showAlert("Error adding game: " + ex.getMessage(), Alert.AlertType.ERROR);
-            }
+    private void removeGame(String gameName, Button addButton) {
+        if (libraryController.removeGameFromLibrary(gameName)) {
+            showAlert("Game removed successfully!", Alert.AlertType.INFORMATION);
+            refreshGamesList();
+        } else {
+            showAlert("Failed to remove game.", Alert.AlertType.ERROR);
         }
     }
-
-//    private void removeGame() {
-//        Game selectedGame = gamesTable.getSelectionModel().getSelectedItem();
-//        if (selectedGame != null) {
-//            try {
-//                boolean success = libraryController.removeGameFromLibrary(selectedGame.getId());
-//                showAlert(success ? "Game removed successfully!" : "Failed to remove game.", Alert.AlertType.INFORMATION);
-//                refreshGamesList();
-//            } catch (Exception ex) {
-//                showAlert("Error removing game: " + ex.getMessage(), Alert.AlertType.ERROR);
-//            }
-//        } else {
-//            showAlert("No game selected.", Alert.AlertType.WARNING);
-//        }
-//    }
 
     private void back() {
         try {

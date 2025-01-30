@@ -3,8 +3,8 @@
     -fx-alignment: center; /* Centrado del contenido */
 }
 
-.addButton {
-    -fx-text-fill: white;
+.removeButton {
+    -fx-background-color: red;
     -fx-border-radius: 5px;
     -fx-padding: 5 10;
     -fx-opacity: 0; /* Oculto por defecto */
@@ -12,31 +12,30 @@
     -fx-transition: opacity 0.3s ease;
 }
 
-.image-container:hover .addButton{
+.image-container:hover .removeButton{
     -fx-opacity: 1; /* Mostrar el botón al pasar el ratón */
 }
 
-.added {
-    -fx-background-color: green;
+.info-button {
+    -fx-font-size: 14px;
+    -fx-text-fill: white;
+    -fx-background-color: rgba(0, 0, 0, 0.7);
+    -fx-padding: 5px;
+    -fx-border-radius: 50%;
+    -fx-alignment: center;
 }
 
-.not-added {
-    -fx-background-color: rgba(0, 0, 0, 0.7);
+.status-dropdown {
+    -fx-background-color: white;
+    -fx-font-size: 14px;
+    -fx-border-radius: 5px;
 }
 
 .number-box {
-    -fx-background-color: rgba(0, 0, 0, 0.7);
+    -fx-font-size: 16px;
     -fx-text-fill: white;
-    -fx-padding: 5 10;
+    -fx-background-color: rgba(0, 0, 0, 0.6);
+    -fx-padding: 5px;
     -fx-border-radius: 5px;
-    -fx-font-size: 14px;
-}
-
-.price-box {
-    -fx-background-color: rgba(0, 0, 0, 0.7);
-    -fx-text-fill: white;
-    -fx-padding: 5 10;
-    -fx-border-radius: 5px;
-    -fx-font-size: 14px;
 }
 

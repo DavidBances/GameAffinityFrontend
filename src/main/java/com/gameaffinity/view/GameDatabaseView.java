@@ -6,6 +6,8 @@ import com.gameaffinity.model.Game;
 import com.gameaffinity.util.SpringFXMLLoader;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -15,7 +17,6 @@ import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.converter.json.GsonBuilderUtils;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -124,10 +125,23 @@ public class GameDatabaseView {
             // Guardar el botón en el mapa
             gameButtonMap.put(game.getName(), addButton);
 
-            // Crear StackPane para apilar la imagen y el botón
+            // Crear cuadro de número en la parte inferior derecha
+            int score = libraryController.getMeanGameScore(game.getId());
+            Label numberLabel = new Label(score + "");  // Puedes cambiar el número inicial
+            numberLabel.getStyleClass().add("number-box");
+            StackPane.setAlignment(numberLabel, Pos.BOTTOM_RIGHT);  // Lo coloca abajo a la derecha
+            StackPane.setMargin(numberLabel, new Insets(0, 5, 5, 0)); // Pequeño margen para no pegarlo demasiado a los bordes
+
+            double price = game.getPrice();
+            Label priceLabel = new Label(price == 0 ? "FREE" : price + "");  // Puedes cambiar el número inicial
+            priceLabel.getStyleClass().add("price-box");
+            StackPane.setAlignment(priceLabel, Pos.BOTTOM_LEFT);  // Lo coloca abajo a la derecha
+            StackPane.setMargin(priceLabel, new Insets(0, 0, 5, 5)); // Pequeño margen para no pegarlo demasiado a los bordes
+
+            // Crear StackPane para apilar la imagen, el botón y el número
             StackPane stackPane = new StackPane();
             stackPane.getStyleClass().add("image-container");
-            stackPane.getChildren().addAll(imageView, addButton);
+            stackPane.getChildren().addAll(imageView, addButton, numberLabel, priceLabel);
 
             // Añadir StackPane al FlowPane
             imageContainer.getChildren().add(stackPane);
@@ -142,18 +156,6 @@ public class GameDatabaseView {
         genreComboBox.getItems().addAll(libraryController.getAllGenres());
         genreComboBox.getSelectionModel().selectFirst();
     }
-
-
-//    private void configureTableColumns() {
-//        nameColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getName()));
-//        genreColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getGenre()));
-//        priceColumn
-//                .setCellValueFactory(cellData -> new SimpleDoubleProperty(cellData.getValue().getPrice()).asObject());
-//        scoreColumn.setCellValueFactory(cellData ->
-//                new SimpleIntegerProperty(libraryController.getGameScore(cellData.getValue().getId())).asObject()
-//        );
-//        refreshGameDatabase();
-//    }
 
     private void refreshGameDatabase() {
         List<Game> games = gameManagementController.getAllGames();

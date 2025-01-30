@@ -113,7 +113,7 @@ public class LibraryServiceAPI {
     }
 
     // Obtener la puntuación promedio de un juego
-    public int getGameScore(int gameId) {
+    public int getMeanGameScore(int gameId) {
         String url = BASE_URL + "/avgScore/{gameId}";
 
         HttpEntity<Object> entity = new HttpEntity<>(createHttpHeadersWithToken());

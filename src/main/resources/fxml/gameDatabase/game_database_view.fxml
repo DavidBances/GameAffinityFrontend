@@ -5,13 +5,14 @@
 <?import javafx.scene.layout.*?>
 
 <AnchorPane prefHeight="780.0" prefWidth="880.0" xmlns="http://javafx.com/javafx/17.0.12"
-            xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.gameaffinity.view.GameDatabaseView">
+            xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.gameaffinity.view.GameDatabaseView"
+            stylesheets="@../../css/gameDatabase/style.css">
 
     <VBox alignment="CENTER" layoutY="74.0" prefHeight="700.0" prefWidth="880.0" spacing="10">
 
         <ScrollPane fitToHeight="true" fitToWidth="true" prefHeight="623.0" prefWidth="930.0">
             <FlowPane fx:id="imageContainer" alignment="TOP_CENTER" hgap="10" prefHeight="621.0" prefWidth="844.0"
-                      prefWrapLength="460" stylesheets="@../../css/gameDatabase/style.css" vgap="10"/>
+                      prefWrapLength="460" vgap="10"/>
         </ScrollPane>
         <Button fx:id="backButton" mnemonicParsing="false" text="Back"/>
     </VBox>
