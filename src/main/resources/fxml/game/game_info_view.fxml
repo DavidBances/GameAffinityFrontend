@@ -5,38 +5,34 @@
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane prefHeight="500.0" prefWidth="800.0" stylesheets="@../../css/game/style.css"
-            xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="com.gameaffinity.view.GameInfoView">
+<AnchorPane prefHeight="500.0" prefWidth="800.0" stylesheets="@../../css/game/style.css" xmlns="http://javafx.com/javafx/11.0.14-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.gameaffinity.view.GameInfoView">
     <HBox prefHeight="500.0" prefWidth="800.0">
-        <ImageView fx:id="imageView" fitHeight="500.0" fitWidth="350.0" pickOnBounds="true" preserveRatio="true"/>
+        <ImageView fx:id="imageView" fitHeight="500.0" fitWidth="350.0" pickOnBounds="true" preserveRatio="true" />
         <VBox prefHeight="600.0" prefWidth="457.0">
-            <HBox alignment="CENTER_RIGHT" prefHeight="100.0" prefWidth="200.0">
-                <Label fx:id="gameName" prefHeight="17.0" prefWidth="101.0" text="Text">
+            <HBox alignment="CENTER_RIGHT" prefHeight="48.0" prefWidth="450.0">
+                <Label fx:id="gameName" prefHeight="17.0" prefWidth="142.0" text="Text">
                     <HBox.margin>
-                        <Insets right="150.0"/>
+                        <Insets right="150.0" />
                     </HBox.margin>
                 </Label>
                 <ComboBox fx:id="statusBox" prefWidth="150.0">
                     <HBox.margin>
-                        <Insets right="3.0"/>
+                        <Insets right="3.0" />
                     </HBox.margin>
                 </ComboBox>
             </HBox>
-            <TextArea fx:id="descriptionArea" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="514.0"
-                      prefWidth="457.0" StackPane.alignment="CENTER_LEFT"/>
-            <HBox fx:id="starRating" alignment="BOTTOM_LEFT" maxHeight="-Infinity" maxWidth="-Infinity"
-                  prefHeight="27.0" prefWidth="400.0" StackPane.alignment="BOTTOM_CENTER">
-                <ToggleButton styleClass="star-button" text="★"/>
-                <ToggleButton styleClass="star-button" text="★"/>
-                <ToggleButton styleClass="star-button" text="★"/>
-                <ToggleButton styleClass="star-button" text="★"/>
-                <ToggleButton styleClass="star-button" text="★"/>
-                <ToggleButton styleClass="star-button" text="★"/>
-                <ToggleButton styleClass="star-button" text="★"/>
-                <ToggleButton styleClass="star-button" text="★"/>
-                <ToggleButton styleClass="star-button" text="★"/>
-                <ToggleButton styleClass="star-button" text="★"/>
+            <TextArea fx:id="descriptionArea" editable="false" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="352.0" prefWidth="450.0" StackPane.alignment="CENTER_LEFT" />
+         <TextArea fx:id="reviewArea" layoutX="10.0" layoutY="58.0" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="102.0" prefWidth="450.0" />
+            <HBox fx:id="starRating" alignment="BOTTOM_LEFT" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="27.0" prefWidth="453.0" StackPane.alignment="BOTTOM_CENTER">
+                <ToggleButton styleClass="star-button" text="★" />
+                <ToggleButton styleClass="star-button" text="★" />
+                <ToggleButton styleClass="star-button" text="★" />
+                <ToggleButton styleClass="star-button" text="★" />
+                <ToggleButton styleClass="star-button" text="★" />
+            <Button fx:id="removeButton" alignment="CENTER_RIGHT" contentDisplay="CENTER" mnemonicParsing="false" text="❌">
+               <HBox.margin>
+                  <Insets bottom="1.0" left="265.0" />
+               </HBox.margin></Button>
             </HBox>
         </VBox>
     </HBox>

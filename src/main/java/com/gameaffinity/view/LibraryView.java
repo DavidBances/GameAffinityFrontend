@@ -86,7 +86,7 @@ public class LibraryView {
             removeButton.setOnAction(e -> removeGame((String) removeButton.getUserData(), removeButton));
 
             // Label del score (ahora editable)
-            Label scoreLabel = new Label(game.getScore() + "");
+            Label scoreLabel = new Label(game.getScore() + "⭐");
             scoreLabel.getStyleClass().add("number-box");
             StackPane.setAlignment(scoreLabel, Pos.BOTTOM_RIGHT);
             StackPane.setMargin(scoreLabel, new Insets(0, 5, 5, 0));
@@ -172,12 +172,12 @@ public class LibraryView {
     }
 
     public void updateGameScore(Game game, Integer newScore) {
-        if (newScore != null && newScore >= 0 && newScore <= 10) {
+        if (newScore != null && newScore >= 0 && newScore <= 5) {
             boolean success = libraryController.updateGameScore(game.getId(), newScore);
             showAlert(success ? "Score updated successfully!" : "Failed to update score.", Alert.AlertType.INFORMATION);
             refreshGamesList();
         } else {
-            showAlert("Invalid score. Please enter a value between 0 and 10.", Alert.AlertType.WARNING);
+            showAlert("Invalid score. Please enter a value between 0 and 5.", Alert.AlertType.WARNING);
         }
     }
 

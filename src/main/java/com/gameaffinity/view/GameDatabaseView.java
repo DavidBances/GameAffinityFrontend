@@ -115,6 +115,8 @@ public class GameDatabaseView {
             imageView.setFitHeight(300);
             imageView.setSmooth(true);
 
+            imageView.setOnMouseClicked(e -> openGameInfoView(game));
+
             // Crear botón superpuesto
             Button addButton = new Button("+");
             addButton.getStyleClass().add("addButton");
@@ -127,7 +129,7 @@ public class GameDatabaseView {
 
             // Crear cuadro de número en la parte inferior derecha
             int score = libraryController.getMeanGameScore(game.getId());
-            Label numberLabel = new Label(score + "");  // Puedes cambiar el número inicial
+            Label numberLabel = new Label(score + "⭐");  // Puedes cambiar el número inicial
             numberLabel.getStyleClass().add("number-box");
             StackPane.setAlignment(numberLabel, Pos.BOTTOM_RIGHT);  // Lo coloca abajo a la derecha
             StackPane.setMargin(numberLabel, new Insets(0, 5, 5, 0)); // Pequeño margen para no pegarlo demasiado a los bordes
@@ -211,6 +213,29 @@ public class GameDatabaseView {
             } else {
                 System.out.println("Aun no tienes el juego en la biblioteca.");
             }
+        }
+    }
+
+    private void openGameInfoView(Game game) {
+        try {
+            Stage newStage = new Stage();
+            FXMLLoader loader = springFXMLLoader.loadFXML("/fxml/game/game_info_view.fxml");
+            Parent gameInfoView = loader.load();
+
+            GameInfoView controller = loader.getController();
+            controller.setGame(game);
+            controller.disableForGameDatabaseView();
+
+            Scene gameInfoViewScene = new Scene(gameInfoView);
+            newStage.setScene(gameInfoViewScene);
+
+            newStage.setOnCloseRequest(event -> refreshGameDatabase());
+
+            newStage.setTitle("Game Info - " + game.getName());
+            newStage.show();
+        } catch (Exception ex) {
+            showAlert("Error loading game info: " + ex.getMessage(), Alert.AlertType.ERROR);
+            ex.printStackTrace();
         }
     }
     

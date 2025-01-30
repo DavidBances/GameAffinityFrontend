@@ -23,11 +23,15 @@ public class GameInfoView {
     @FXML
     private TextArea descriptionArea;
     @FXML
+    private TextArea reviewArea;
+    @FXML
     private Label gameName;
     @FXML
     private ComboBox<String> statusBox;
     @FXML
     private HBox starRating;
+    @FXML
+    private Button removeButton;
 
     @Autowired
     private LibraryController libraryController;
@@ -42,6 +46,11 @@ public class GameInfoView {
             gameName.setText(this.game.getName());
             loadStates();
             loadGameImage(this.game);
+            //reviewArea.setText(libraryController.getGameReview(this.game.getId()));
+            reviewArea.setText("Aun por implementar");
+            //descriptionArea.setText(this.game.getDescription());
+            descriptionArea.setText("Aun por implementar.");
+            System.out.println(stars.size());
             if (!stars.isEmpty()) {
                 updateStarsFromGame(game.getScore());
             }
@@ -50,21 +59,20 @@ public class GameInfoView {
 
     @FXML
     public void initialize() {
-        //descriptionArea.setText(this.game.getDescription());
-        descriptionArea.setText("Aun por implementar.");
-
         stars.clear();
 
         // Obtener los botones dentro de la HBox
         for (Node node : starRating.getChildren()) {
-            if (node instanceof ToggleButton) {
-                ToggleButton star = (ToggleButton) node;
+            if (node instanceof ToggleButton star) {
                 stars.add(star);
                 star.setOnAction(event -> updateStars(stars.indexOf(star)));
             }
         }
-
         statusBox.setOnAction(e -> updateGameState(game, statusBox.getValue()));
+
+        reviewArea.setOnInputMethodTextChanged(e -> updateReview(reviewArea.getText()));
+
+        removeButton.setOnAction(e -> removeGame(this.game.getName()));
     }
 
     private void loadStates() {
@@ -112,11 +120,11 @@ public class GameInfoView {
     }
 
     public void updateGameScore(Game game, Integer newScore) {
-        if (newScore != null && newScore >= 0 && newScore <= 10) {
+        if (newScore != null && newScore >= 0 && newScore <= 5) {
             boolean success = libraryController.updateGameScore(game.getId(), newScore);
             showAlert(success ? "Score updated successfully!" : "Failed to update score.", Alert.AlertType.INFORMATION);
         } else {
-            showAlert("Invalid score. Please enter a value between 0 and 10.", Alert.AlertType.WARNING);
+            showAlert("Invalid score. Please enter a value between 0 and 5.", Alert.AlertType.WARNING);
         }
     }
 
@@ -125,10 +133,31 @@ public class GameInfoView {
         showAlert(success ? "State updated successfully!" : "Failed to update state.", Alert.AlertType.INFORMATION);
     }
 
+    public void updateReview(String review){
+        //Implementar en el backend TODO
+        //boolean success = libraryController.updateGameReview(game.getId(), review);
+        //showAlert(success ? "State updated successfully!" : "Failed to update state.", Alert.AlertType.INFORMATION);
+    }
+
+    private void removeGame(String gameName) {
+        if (libraryController.removeGameFromLibrary(gameName)) {
+            showAlert("Game removed successfully!", Alert.AlertType.INFORMATION);
+        } else {
+            showAlert("Failed to remove game.", Alert.AlertType.ERROR);
+        }
+    }
 
     private void showAlert(String message, Alert.AlertType alertType) {
         Alert alert = new Alert(alertType);
         alert.setContentText(message);
         alert.showAndWait();
+    }
+
+    public void disableForGameDatabaseView(){
+        reviewArea.setVisible(false);
+        statusBox.setVisible(false);
+        starRating.setDisable(true);
+        removeButton.setVisible(false);
+        updateStarsFromGame(libraryController.getMeanGameScore(this.game.getId()));
     }
 }
