@@ -109,7 +109,7 @@ public class LibraryView {
             StackPane.setMargin(infoButton, new Insets(0, 0, 5, 5));
 
             // Acción del botón de información
-            infoButton.setOnAction(e -> showAlert("Game Info:\nName: " + game.getName() + "\nGenre: " + game.getGenre(), Alert.AlertType.INFORMATION));
+            infoButton.setOnAction(e -> openGameInfoView(game));
 
             // Menú desplegable para el estado del juego
             ComboBox<String> statusDropdown = new ComboBox<>();
@@ -193,6 +193,28 @@ public class LibraryView {
             refreshGamesList();
         } else {
             showAlert("Failed to remove game.", Alert.AlertType.ERROR);
+        }
+    }
+
+    private void openGameInfoView(Game game) {
+        try {
+            Stage newStage = new Stage();
+            FXMLLoader loader = springFXMLLoader.loadFXML("/fxml/game/game_info_view.fxml");
+            Parent gameInfoView = loader.load();
+
+            GameInfoView controller = loader.getController();
+            controller.setGame(game);
+
+            Scene gameInfoViewScene = new Scene(gameInfoView);
+            newStage.setScene(gameInfoViewScene);
+
+            newStage.setOnCloseRequest(event -> refreshGamesList());
+
+            newStage.setTitle("Game Info - " + game.getName());
+            newStage.show();
+        } catch (Exception ex) {
+            showAlert("Error loading game info: " + ex.getMessage(), Alert.AlertType.ERROR);
+            ex.printStackTrace();
         }
     }
 
