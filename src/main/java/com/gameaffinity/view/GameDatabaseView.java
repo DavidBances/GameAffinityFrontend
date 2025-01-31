@@ -121,8 +121,8 @@ public class GameDatabaseView {
             Button addButton = new Button("+");
             addButton.getStyleClass().add("addButton");
             addButton.getStyleClass().add("not-added");
-            addButton.setUserData(game.getName()); // Asocia el nombre del juego al botón
-            addButton.setOnAction(e -> addGameToLibrary((String) addButton.getUserData(), addButton));
+            addButton.setUserData(game); // Asocia el nombre del juego al botón
+            addButton.setOnAction(e -> addGameToLibrary((Game) addButton.getUserData(), addButton));
 
             // Guardar el botón en el mapa
             gameButtonMap.put(game.getName(), addButton);
@@ -161,7 +161,6 @@ public class GameDatabaseView {
 
     private void refreshGameDatabase() {
         List<Game> games = gameManagementController.getAllGames();
-        System.out.println(games);
         if (games == null) {
             games = new ArrayList<>();
         }
@@ -170,7 +169,6 @@ public class GameDatabaseView {
 
     private void refreshGameDatabaseByName(String keyword) {
         List<Game> games = gameManagementController.getGamesByName(keyword);
-        System.out.println("Texto en el campo de búsqueda: " + keyword);  // Depuración
         if (games == null) {
             games = new ArrayList<>();
         }
@@ -193,13 +191,14 @@ public class GameDatabaseView {
         loadGameImages(games);
     }
 
-    private void addGameToLibrary(String gameName, Button addButton) {
+    private void addGameToLibrary(Game game, Button addButton) {
         if (!addButton.getStyleClass().contains("added")) {
             addButton.setText("✔");
             addButton.getStyleClass().remove("not-added");
             addButton.getStyleClass().add("added");
             // Lógica para añadir el juego a la biblioteca
-            if (libraryController.addGameToLibrary(gameName)) {
+            if (libraryController.addGameToLibrary(game.getName())) {
+                openGameInfoView(game);
                 System.out.println("El juego se ha añadido a la biblioteca.");
             } else {
                 System.out.println("El juego ya está en la biblioteca.");
@@ -208,7 +207,7 @@ public class GameDatabaseView {
             addButton.setText("+");
             addButton.getStyleClass().remove("added");
             addButton.getStyleClass().add("not-added");
-            if (libraryController.removeGameFromLibrary(gameName)) {
+            if (libraryController.removeGameFromLibrary(game.getName())) {
                 System.out.println("El juego se ha eliminado de la biblioteca.");
             } else {
                 System.out.println("Aun no tienes el juego en la biblioteca.");
@@ -238,7 +237,7 @@ public class GameDatabaseView {
             ex.printStackTrace();
         }
     }
-    
+
     private void back() {
         try {
             Stage currentStage = (Stage) imageContainer.getScene().getWindow();

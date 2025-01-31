@@ -53,8 +53,20 @@ public class LibraryController {
         return libraryServiceAPI.updateGameScore(gameId, newScore);
     }
 
+    public boolean updateGameReview(int gameId, String review) {
+        return libraryServiceAPI.updateGameReview(gameId, review);
+    }
+
+    public boolean updateTimePlayed(int gameId, Double timePlayed) {
+        return libraryServiceAPI.updateTimePlayed(gameId, timePlayed);
+    }
+
     public int getMeanGameScore(int gameId) {
         return libraryServiceAPI.getMeanGameScore(gameId);
+    }
+
+    public double getMeanGameTimePlayed(int gameId) {
+        return libraryServiceAPI.getMeanTimePlayed(gameId);
     }
 
     public boolean removeGameFromLibrary(String gameName) {

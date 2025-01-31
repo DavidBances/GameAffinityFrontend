@@ -7,3 +7,11 @@
 .star-button:selected {
     -fx-text-fill: gold;
 }
+
+:disabled {
+    -fx-opacity: 1.0;            /* Evita que el control se vea desvanecido */
+    -fx-text-fill: black;        /* Mantiene el color del texto */
+    -fx-background-color: white; /* Mantiene el fondo blanco */
+    -fx-border-color: transparent; /* Elimina el borde visual */
+    -fx-border-width: 1px;       /* Define el grosor del borde */
+}

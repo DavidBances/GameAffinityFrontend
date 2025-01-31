@@ -50,8 +50,6 @@ public class LoginPanelView {
             Stage currentStage = (Stage) loginButton.getScene().getWindow();
 
             String role = loginController.login(email, password);
-            System.out.println(role);
-
             if (role != null) {
                 if ("ADMINISTRATOR".equalsIgnoreCase(role)) {
                     FXMLLoader loader = springFXMLLoader.loadFXML("/fxml/admin/admin_dashboard.fxml");
@@ -71,7 +69,6 @@ public class LoginPanelView {
         } catch (Exception e) {
             showAlert("An error occurred.", "Error", Alert.AlertType.ERROR);
             e.printStackTrace();
-            System.out.println(e.getMessage());
         }
     }
 

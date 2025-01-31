@@ -5,13 +5,17 @@ import com.gameaffinity.model.Game;
 import com.gameaffinity.model.UserBase;
 import com.gameaffinity.util.SpringFXMLLoader;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.StackPane;
+import javafx.stage.Stage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -36,7 +40,7 @@ public class FriendLibraryView {
     private SpringFXMLLoader springFXMLLoader;
     @Autowired
     private LibraryController libraryController;
-    
+
     private UserBase user;
 
     public void setUser(UserBase user) {
@@ -102,7 +106,7 @@ public class FriendLibraryView {
             StackPane.setMargin(infoButton, new Insets(0, 0, 5, 5));
 
             // Acción del botón de información
-            infoButton.setOnAction(e -> showAlert("Game Info:\nName: " + game.getName() + "\nGenre: " + game.getGenre(), Alert.AlertType.INFORMATION));
+            infoButton.setOnAction(e -> openGameInfoView(game));
 
             // Menú desplegable para el estado del juego
             Label statusLabel = new Label(game.getState());
@@ -166,6 +170,29 @@ public class FriendLibraryView {
             System.out.println("El juego se ha añadido a la biblioteca.");
         } else {
             System.out.println("El juego ya está en la biblioteca.");
+        }
+    }
+
+    private void openGameInfoView(Game game) {
+        try {
+            Stage newStage = new Stage();
+            FXMLLoader loader = springFXMLLoader.loadFXML("/fxml/game/game_info_view.fxml");
+            Parent gameInfoView = loader.load();
+
+            GameInfoView controller = loader.getController();
+            controller.setGame(game);
+            controller.disableForFriendView();
+
+            Scene gameInfoViewScene = new Scene(gameInfoView);
+            newStage.setScene(gameInfoViewScene);
+
+            newStage.setOnCloseRequest(event -> refreshGamesList());
+
+            newStage.setTitle("Game Info - " + game.getName());
+            newStage.show();
+        } catch (Exception ex) {
+            showAlert("Error loading game info: " + ex.getMessage(), Alert.AlertType.ERROR);
+            ex.printStackTrace();
         }
     }
 

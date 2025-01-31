@@ -37,7 +37,6 @@ public class LibraryServiceAPI {
 
         // Obtener el token JWT desde UserServiceAPI
         String jwtToken = userServiceAPI.getToken(); // Obtienes el token desde el servicio centralizado
-        System.out.println("Token JWT: " + jwtToken);
         if (jwtToken == null) {
             throw new IllegalStateException("Token no disponible. El usuario debe iniciar sesión.");
         }
@@ -121,6 +120,15 @@ public class LibraryServiceAPI {
         return response.getBody();
     }
 
+    // Obtener la puntuación promedio de un juego
+    public double getMeanTimePlayed(int gameId) {
+        String url = BASE_URL + "/avgTimePlayed/{gameId}";
+
+        HttpEntity<Object> entity = new HttpEntity<>(createHttpHeadersWithToken());
+        ResponseEntity<Double> response = restTemplate.exchange(url, HttpMethod.GET, entity, Double.class, gameId);
+        return response.getBody();
+    }
+
     // Añadir juego a la biblioteca
     public boolean addGameToLibrary(String gameName) {
         String url = BASE_URL + "/add";
@@ -162,6 +170,34 @@ public class LibraryServiceAPI {
         String finalUrl = UriComponentsBuilder.fromHttpUrl(url)
                 .queryParam("gameId", gameId)
                 .queryParam("score", score)
+                .toUriString();
+
+        HttpEntity<Object> entity = new HttpEntity<>(createHttpHeadersWithToken());
+        ResponseEntity<Map<String, Object>> response = restTemplate.exchange(finalUrl, HttpMethod.PUT, entity, new ParameterizedTypeReference<Map<String, Object>>() {
+        });
+        Boolean success = (Boolean) response.getBody().get("success");
+        return success != null && success;
+    }
+
+    public boolean updateGameReview(int gameId, String review) {
+        String url = BASE_URL + "/update/review";
+        String finalUrl = UriComponentsBuilder.fromHttpUrl(url)
+                .queryParam("gameId", gameId)
+                .queryParam("review", review)
+                .toUriString();
+
+        HttpEntity<Object> entity = new HttpEntity<>(createHttpHeadersWithToken());
+        ResponseEntity<Map<String, Object>> response = restTemplate.exchange(finalUrl, HttpMethod.PUT, entity, new ParameterizedTypeReference<Map<String, Object>>() {
+        });
+        Boolean success = (Boolean) response.getBody().get("success");
+        return success != null && success;
+    }
+
+    public boolean updateTimePlayed(int gameId, Double timePlayed) {
+        String url = BASE_URL + "/update/time_played";
+        String finalUrl = UriComponentsBuilder.fromHttpUrl(url)
+                .queryParam("gameId", gameId)
+                .queryParam("timePlayed", timePlayed)
                 .toUriString();
 
         HttpEntity<Object> entity = new HttpEntity<>(createHttpHeadersWithToken());

@@ -23,9 +23,13 @@ public class GameInfoView {
     @FXML
     private TextArea descriptionArea;
     @FXML
+    private Label priceLabel;
+    @FXML
     private TextArea reviewArea;
     @FXML
     private Label gameName;
+    @FXML
+    private TextField timePlayed;
     @FXML
     private ComboBox<String> statusBox;
     @FXML
@@ -46,11 +50,13 @@ public class GameInfoView {
             gameName.setText(this.game.getName());
             loadStates();
             loadGameImage(this.game);
-            //reviewArea.setText(libraryController.getGameReview(this.game.getId()));
-            reviewArea.setText("Aun por implementar");
-            //descriptionArea.setText(this.game.getDescription());
-            descriptionArea.setText("Aun por implementar.");
-            System.out.println(stars.size());
+            priceLabel.setText(this.game.getPrice() + "€");
+            reviewArea.setText(this.game.getReview());
+            descriptionArea.setText(this.game.getDescription());
+            timePlayed.setText(this.game.getTimePlayed() + "");
+            reviewArea.setFocusTraversable(false);
+            timePlayed.setFocusTraversable(false);
+            descriptionArea.setDisable(true);
             if (!stars.isEmpty()) {
                 updateStarsFromGame(game.getScore());
             }
@@ -70,7 +76,16 @@ public class GameInfoView {
         }
         statusBox.setOnAction(e -> updateGameState(game, statusBox.getValue()));
 
-        reviewArea.setOnInputMethodTextChanged(e -> updateReview(reviewArea.getText()));
+        reviewArea.focusedProperty().addListener((obs, oldVal, newVal) -> {
+            if (!newVal) {
+                updateReview(reviewArea.getText());
+            }
+        });
+        timePlayed.focusedProperty().addListener((obs, oldVal, newVal) -> {
+            if (!newVal) { // Se ejecuta cuando pierde el foco
+                updateTimePlayed(Double.valueOf(timePlayed.getText()));
+            }
+        });
 
         removeButton.setOnAction(e -> removeGame(this.game.getName()));
     }
@@ -85,9 +100,7 @@ public class GameInfoView {
 
     // Método para actualizar solo la visualización de las estrellas al cargar un juego
     private void updateStarsFromGame(int score) {
-        System.out.println(score);
         int selectedIndex = Math.max(0, score - 1); // Asegura que el índice sea válido
-        System.out.println(selectedIndex);
         for (int i = 0; i < stars.size(); i++) {
             stars.get(i).setSelected(i <= selectedIndex);
         }
@@ -133,10 +146,14 @@ public class GameInfoView {
         showAlert(success ? "State updated successfully!" : "Failed to update state.", Alert.AlertType.INFORMATION);
     }
 
-    public void updateReview(String review){
-        //Implementar en el backend TODO
-        //boolean success = libraryController.updateGameReview(game.getId(), review);
-        //showAlert(success ? "State updated successfully!" : "Failed to update state.", Alert.AlertType.INFORMATION);
+    public void updateReview(String review) {
+        boolean success = libraryController.updateGameReview(game.getId(), review);
+        showAlert(success ? "Review updated successfully!" : "Failed to update review.", Alert.AlertType.INFORMATION);
+    }
+
+    public void updateTimePlayed(Double timePlayed) {
+        boolean success = libraryController.updateTimePlayed(game.getId(), timePlayed);
+        showAlert(success ? "Time played updated successfully!" : "Failed to update time played.", Alert.AlertType.INFORMATION);
     }
 
     private void removeGame(String gameName) {
@@ -153,11 +170,27 @@ public class GameInfoView {
         alert.showAndWait();
     }
 
-    public void disableForGameDatabaseView(){
-        reviewArea.setVisible(false);
+    public void disableForGameDatabaseView() {
+        reviewArea.setDisable(true);
         statusBox.setVisible(false);
         starRating.setDisable(true);
         removeButton.setVisible(false);
+
         updateStarsFromGame(libraryController.getMeanGameScore(this.game.getId()));
+
+        timePlayed.setDisable(true);
+        timePlayed.setText(libraryController.getMeanGameTimePlayed(this.game.getId()) + "");
+    }
+
+    public void disableForFriendView() {
+        reviewArea.setDisable(true);
+        statusBox.setDisable(true);
+        starRating.setDisable(true);
+        removeButton.setVisible(false);
+
+        updateStarsFromGame(this.game.getScore());
+
+        timePlayed.setDisable(true);
+        timePlayed.setText(this.game.getTimePlayed() + "");
     }
 }

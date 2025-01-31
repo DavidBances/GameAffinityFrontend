@@ -17,7 +17,6 @@ public class LoginController {
 
     public String login(String email, String password) {
         String token = userServiceAPI.login(email, password);
-        System.out.println(token);
         if (token != null && !token.isEmpty()) {
             userServiceAPI.setToken(token);
         }
