@@ -41,7 +41,6 @@ public class GameFormView {
     }
 
     public void saveGame(String name, String genre, String priceText) {
-        System.out.println("Hola");
         try {
             if (gameManagementController.addGame(name, genre, priceText)) {
                 showAlert("Game added successfully!", "Success", Alert.AlertType.INFORMATION);

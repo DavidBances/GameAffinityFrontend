@@ -54,14 +54,12 @@ public class GameManagementServiceAPI {
                 .queryParam("priceText", priceText)
                 .toUriString();
 
-        System.out.println(finalUrl);
         // Crear una entidad HTTP con los encabezados que incluyen el token
         HttpEntity<Void> entity = new HttpEntity<>(createHttpHeadersWithToken());
 
         // Realiza la solicitud al backend (con método POST)
         ResponseEntity<Map<String, Object>> response = restTemplate.exchange(finalUrl, HttpMethod.POST, entity, new ParameterizedTypeReference<Map<String, Object>>() {
         });
-        System.out.println(response.getBody());
         Boolean success = (Boolean) response.getBody().get("success");
         return success != null && success;
     }

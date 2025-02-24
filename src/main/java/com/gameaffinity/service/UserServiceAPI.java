@@ -82,7 +82,6 @@ public class UserServiceAPI {
 
         try {
             DecodedJWT jwt = JWT.decode(token);
-            System.out.println(jwt.getClaim("roles").asList(String.class));
             return jwt.getClaim("roles").asList(String.class).getFirst();  // Suponiendo que el token tiene un claim llamado "role"
         } catch (Exception e) {
             throw new IllegalArgumentException("Token inválido o corrupto.");
