@@ -20,7 +20,7 @@ import java.util.Map;
 @Service
 public class LibraryServiceAPI {
 
-    private static final String BASE_URL = "http://localhost:8080/api/library"; // Base URL del backend
+    private static final String BASE_URL = "http://localhost:8081/api/library"; // Base URL del backend
     private final RestTemplate restTemplate;
     private final UserServiceAPI userServiceAPI; // Inyección de dependencia para UserServiceAPI
 

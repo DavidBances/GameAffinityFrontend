@@ -19,6 +19,9 @@ dependencies {
     implementation 'org.openjfx:javafx-controls:21'
     implementation 'org.openjfx:javafx-fxml:21'
 
+    // Spring Boot JPA + Hibernate (para manejar la base de datos)
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+
     // Para realizar peticiones HTTP al backend
     implementation 'org.springframework:spring-web:6.1.3'
 

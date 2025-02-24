@@ -86,21 +86,21 @@ public class LibraryView {
             removeButton.setOnAction(e -> removeGame((String) removeButton.getUserData(), removeButton));
 
             // Label del score (ahora editable)
-            Label scoreLabel = new Label(game.getScore() + "⭐");
-            scoreLabel.getStyleClass().add("number-box");
-            StackPane.setAlignment(scoreLabel, Pos.BOTTOM_RIGHT);
-            StackPane.setMargin(scoreLabel, new Insets(0, 5, 5, 0));
+            //Label scoreLabel = new Label(game.getScore() + "⭐");
+            //scoreLabel.getStyleClass().add("number-box");
+            //StackPane.setAlignment(scoreLabel, Pos.BOTTOM_RIGHT);
+            //StackPane.setMargin(scoreLabel, new Insets(0, 5, 5, 0));
 
             // Hacer que el score sea editable
-            scoreLabel.setOnMouseClicked(event -> {
-                String newScoreStr = showInputDialog("Enter new score (0-10):");
-                try {
-                    int newScore = Integer.parseInt(newScoreStr);
-                    updateGameScore(game, newScore);
-                } catch (NumberFormatException e) {
-                    showAlert("Invalid input. Please enter a number between 0 and 10.", Alert.AlertType.WARNING);
-                }
-            });
+            //scoreLabel.setOnMouseClicked(event -> {
+            //String newScoreStr = showInputDialog("Enter new score (0-10):");
+            //    try {
+            //        int newScore = Integer.parseInt(newScoreStr);
+            //        updateGameScore(game, newScore);
+            //    } catch (NumberFormatException e) {
+            //        showAlert("Invalid input. Please enter a number between 0 and 10.", Alert.AlertType.WARNING);
+            //    }
+            //});
 
             // Botón de información en la esquina superior izquierda
             Button infoButton = new Button("ℹ");
@@ -114,7 +114,7 @@ public class LibraryView {
             // Menú desplegable para el estado del juego
             ComboBox<String> statusDropdown = new ComboBox<>();
             statusDropdown.getItems().addAll("Jugando", "Completado", "Pendiente");
-            statusDropdown.setValue(game.getState()); // Usar el estado actual del juego
+            //statusDropdown.setValue(game.getState()); // Usar el estado actual del juego
             statusDropdown.getStyleClass().add("status-dropdown");
             StackPane.setAlignment(statusDropdown, Pos.TOP_CENTER);
             StackPane.setMargin(statusDropdown, new Insets(5, 0, 0, 0));
@@ -125,7 +125,7 @@ public class LibraryView {
             // StackPane para contener todos los elementos
             StackPane stackPane = new StackPane();
             stackPane.getStyleClass().add("image-container");
-            stackPane.getChildren().addAll(imageView, removeButton, scoreLabel, infoButton, statusDropdown);
+            stackPane.getChildren().addAll(imageView, removeButton, /*scoreLabel,*/ infoButton, statusDropdown);
 
             imageContainer.getChildren().add(stackPane);
         }
@@ -135,7 +135,7 @@ public class LibraryView {
     private void loadGenres() {
         genreComboBox.getItems().clear();
         genreComboBox.getItems().add("All");
-        genreComboBox.getItems().addAll(libraryController.getAllGenres());
+        //genreComboBox.getItems().addAll(libraryController.getAllGenres());
         genreComboBox.getSelectionModel().selectFirst();
     }
 

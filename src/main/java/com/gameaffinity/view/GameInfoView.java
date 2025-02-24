@@ -52,7 +52,7 @@ public class GameInfoView {
             descriptionArea.setText("Aun por implementar.");
             System.out.println(stars.size());
             if (!stars.isEmpty()) {
-                updateStarsFromGame(game.getScore());
+                //updateStarsFromGame(game.getScore());
             }
         }
     }
@@ -77,7 +77,7 @@ public class GameInfoView {
 
     private void loadStates() {
         statusBox.getItems().clear();
-        statusBox.setValue(game.getState()); // Usar el estado actual del juego
+        //statusBox.setValue(game.getState()); // Usar el estado actual del juego
         statusBox.getItems().addAll("Jugando", "Completado", "Pendiente");
         statusBox.getStyleClass().add("status-box");
         statusBox.getSelectionModel().selectFirst();

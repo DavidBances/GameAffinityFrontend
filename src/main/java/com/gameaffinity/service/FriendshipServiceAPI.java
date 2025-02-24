@@ -22,7 +22,7 @@ import java.util.Map;
 @Service
 public class FriendshipServiceAPI {
 
-    private static final String BASE_URL = "http://localhost:8080/api/friendships"; // URL de tu backend
+    private static final String BASE_URL = "http://localhost:8081/api/friendships"; // URL de tu backend
     private final RestTemplate restTemplate;
     private final UserServiceAPI userServiceAPI;
 

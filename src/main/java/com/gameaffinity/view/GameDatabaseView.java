@@ -52,7 +52,7 @@ public class GameDatabaseView {
     public void initialize() {
         loadGameImages(gameManagementController.getAllGames());
         refreshGameDatabase();
-        loadGenres();
+        //loadGenres();
 
         filterButton.setOnAction(e -> {
             String selectedGenre = genreComboBox.getValue();

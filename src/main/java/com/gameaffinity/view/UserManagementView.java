@@ -49,20 +49,20 @@ public class UserManagementView {
 
         nameColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getName()));
         emailColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getEmail()));
-        roleColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getRole()));
-        roleColumn.setCellFactory(column -> new ComboBoxTableCell<>(
-                FXCollections.observableArrayList("ADMINISTRATOR", "MODERATOR", "REGULAR_USER")));
+        //roleColumn.setCellValueFactory(cellData -> new (cellData.getValue().getRole()));
+        //roleColumn.setCellFactory(column -> new ComboBoxTableCell<>(
+          //      FXCollections.observableArrayList("ADMINISTRATOR", "MODERATOR", "REGULAR_USER")));
 
-        roleColumn.setOnEditCommit(event -> {
-            UserBase user = event.getRowValue();
-            String newRole = event.getNewValue();
-            if (userManagementController.updateUserRole(user, newRole)) {
-                showAlert("Rol modificado con éxito.", "Exito", Alert.AlertType.INFORMATION);
-            } else {
-                showAlert("Failed to modify role.", "Error", Alert.AlertType.ERROR);
-            }
-            refreshUserTable();
-        });
+        //roleColumn.setOnEditCommit(event -> {
+        //    UserBase user = event.getRowValue();
+        //    String newRole = event.getNewValue();
+        //    if (userManagementController.updateUserRole(user, newRole)) {
+        //        showAlert("Rol modificado con éxito.", "Exito", Alert.AlertType.INFORMATION);
+        //    } else {
+        //        showAlert("Failed to modify role.", "Error", Alert.AlertType.ERROR);
+        //    }
+        //    refreshUserTable();
+        //});
 
         deleteUserButton.setOnAction(
                 event -> {

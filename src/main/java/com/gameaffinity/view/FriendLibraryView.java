@@ -90,10 +90,10 @@ public class FriendLibraryView {
             addButton.setOnAction(e -> addGameToLibrary((String) addButton.getUserData(), addButton));
 
             // Label del score (ahora editable)
-            Label scoreLabel = new Label(game.getScore() + "");
-            scoreLabel.getStyleClass().add("number-box");
-            StackPane.setAlignment(scoreLabel, Pos.BOTTOM_RIGHT);
-            StackPane.setMargin(scoreLabel, new Insets(0, 5, 5, 0));
+            //Label scoreLabel = new Label(game.getScore() + "");
+            //scoreLabel.getStyleClass().add("number-box");
+            //StackPane.setAlignment(scoreLabel, Pos.BOTTOM_RIGHT);
+            //StackPane.setMargin(scoreLabel, new Insets(0, 5, 5, 0));
 
             // Botón de información en la esquina superior izquierda
             Button infoButton = new Button("ℹ");
@@ -105,15 +105,15 @@ public class FriendLibraryView {
             infoButton.setOnAction(e -> showAlert("Game Info:\nName: " + game.getName() + "\nGenre: " + game.getGenre(), Alert.AlertType.INFORMATION));
 
             // Menú desplegable para el estado del juego
-            Label statusLabel = new Label(game.getState());
-            statusLabel.getStyleClass().add("status-label");
-            StackPane.setAlignment(statusLabel, Pos.TOP_CENTER);
-            StackPane.setMargin(statusLabel, new Insets(5, 0, 0, 0));
+            //Label statusLabel = new Label(game.getState());
+            //statusLabel.getStyleClass().add("status-label");
+            //StackPane.setAlignment(statusLabel, Pos.TOP_CENTER);
+            //StackPane.setMargin(statusLabel, new Insets(5, 0, 0, 0));
 
             // StackPane para contener todos los elementos
             StackPane stackPane = new StackPane();
             stackPane.getStyleClass().add("image-container");
-            stackPane.getChildren().addAll(imageView, addButton, scoreLabel, infoButton, statusLabel);
+            stackPane.getChildren().addAll(imageView, addButton /*scoreLabel*/, infoButton /*statusLabel*/);
 
             imageContainer.getChildren().add(stackPane);
         }

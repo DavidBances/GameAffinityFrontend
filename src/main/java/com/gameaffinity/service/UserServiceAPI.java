@@ -17,7 +17,7 @@ import java.util.Map;
 public class UserServiceAPI {
 
     private String token;  // Almacena el token JWT
-    private static final String BASE_URL = "http://localhost:8080/api";  // Asegúrate de que esta URL sea correcta
+    private static final String BASE_URL = "http://localhost:8081/api";  // Asegúrate de que esta URL sea correcta
     private final RestTemplate restTemplate;
 
     public UserServiceAPI() {
@@ -153,11 +153,13 @@ public class UserServiceAPI {
 
     // Eliminar un usuario (requiere token de usuario con permisos de administrador)
     public boolean deleteUser(UserBase user) {
-        String url = BASE_URL + "/user-management/delete";
+        String url = BASE_URL + "/user-management/delete?userId={userId}";
+
+        int userId = user.getId();
 
         HttpEntity<UserBase> entity = new HttpEntity<>(user, createHttpHeadersWithToken());
         ResponseEntity<Map<String, Object>> response = restTemplate.exchange(url, HttpMethod.DELETE, entity, new ParameterizedTypeReference<Map<String, Object>>() {
-        });
+        }, userId);
         Boolean success = (Boolean) response.getBody().get("success");
         return success != null && success;
     }
